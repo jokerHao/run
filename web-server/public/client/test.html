@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<script src="./lib/socket.io/socket.io.js"></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+	<button id="btn_run">run</button>
+<script>
+	var socket;
+
+	var init = function () {
+		socket = io();
+	};
+
+	var run = function () {
+		console.log('run...');
+		socket.emit('run', 'fuck');
+	};
+
+
+	init();
+	$("#btn_run").click(run);
+</script>
+
+123
+</body>
+</html>
