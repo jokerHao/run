@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>仕高利達-後台</title>
+    <script src="js/lib/socket.io/socket.io.js"></script>
+    <script src="js/lib/jquery-2.0.3.min.js"></script>  
+    <script src="js/game.js"></script>      
+
+    <style type="text/css">
+      #state {
+/*        color:#FF0000;
+*/      }
+    </style>
+  </head>
+    <script type="text/javascript">
+      var update_players = function () {
+        game.get_players(function(err, data){
+          $('#tab_players tbody').remove();
+          var str = "";
+          for (var i in data) {
+            var d = data[i];
+            state = d.state==0 ? "等待" : d.state==1 ? "準備" : d.state==2 ? "上場" : "休息";
+            str += "<tr>";
+            str += "<td>" + d.id + "</td>";
+            str += "<td>" + d.name + "</td>";
+            str += "<td>" + d.table_num + "</td>";
+            str += "<td>" + state + "</td>";
+            str += "<td>" + d.code +"</td>";
+            str += "</tr>";
+          }
+          $('#tab_players').append(str);
+        });
+      };
+
+
+      var update_status = function () {
+        game.get_reg_state(function(err, data){   
+          $('#state').text(data.state==1 ? "開放報名中" : "報名停止");
+          $('#state').css('color', data.state==1 ? "green" : "red");
+        });
+      };
+
+      var reg_on = function () {
+        game.reg_on(function(err, data){
+          update_status();
+        });
+      };
+
+      var reg_off = function () {
+        game.reg_off(function(err, data){
+          update_status();
+        });
+      };
+
+      $(document).ready(function(){
+        update_players();
+        update_status();
+      });
+    </script>
+  <body>
+    <p>仕高利達後台</p>
+    <p id="state"></p>
+    <hr>
+    <div>
+      <button onclick="game.init()">重置</button>    
+      <button onclick="reg_on()">開放報名</button>
+      <button onclick="reg_off()">停止報名</button>
+      <button onclick="game.opening()">抽選六人</button>
+      <button onclick="game.start()">開始遊戲</button>
+    </div>
+    <hr>
+    <div>
+      參賽玩家:
+      <table border="1" id="tab_players">
+        <thead>
+          <tr>
+            <th>id</th>
+            <th>暱稱</th> 
+            <th>桌號</th>
+            <th>狀態</th>
+            <th>序號</th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+  </body>
+</html>

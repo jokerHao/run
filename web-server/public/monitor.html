@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>仕高利達-監控</title>
+    <script src="js/lib/socket.io/socket.io.js"></script>	
+	<script src="js/lib/jquery-2.0.3.min.js"></script>  
+    <script src="js/game.js"></script>	
+</head>
+<body>
+
+
+<script type="text/javascript">
+var update_players = function (err, data) {
+    if (!data)
+        return;
+    for (var i in data) {
+        $('#tab_players tbody').remove();
+      var str = "";
+      for (var i in data) {
+        var d = data[i];
+        state = d.state==0 ? "等待" : d.state==1 ? "準備" : d.state==2 ? "上場" : "休息";
+        str += "<tr>";
+        str += "<td>" + d.id + "</td>";
+        str += "<td>" + d.name + "</td>";
+        str += "<td>" + d.table_num + "</td>";
+        str += "<td id=\"" + d.id + "\">" + state + "</td>";
+        str += "<td>" + d.code +"</td>";
+        str += "<td id=\"score_" + d.id + "\">" + 0 + "</td>";
+        str += "</tr>";
+      }
+      $('#tab_players').append(str);        
+    }
+};
+
+var update;
+var update_score = function () {
+    game.get_score (function (err, data) {
+        for (var i in data) {
+            $("#score_"+i).text(data[i]);
+        }
+    });
+};
+
+var start = function (err, data) {
+    update = setInterval("update_score()",1000); 
+};
+
+var player_in = function (err, data) {
+    $("#"+data.pid).text("上場");
+};
+
+var test = function () {
+    // $("#3").text("上場");
+}
+
+game.monitor(update_players, start, player_in);
+game.get_gameing(function (err, data) {
+    if (!data) {
+        return;
+    }
+
+    if (data.start) {
+        start();
+    }
+    update_players(null, data.players);
+});
+
+</script>
+
+<!-- <button onclick="test()"></button>> -->
+<div>
+      參賽玩家:
+      <table border="1" id="tab_players">
+        <thead>
+          <tr>
+            <th>id</th>
+            <th>暱稱</th> 
+            <th>桌號</th>
+            <th>狀態</th>
+            <th>序號</th>
+            <th>分數</th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+</body>
+</html>

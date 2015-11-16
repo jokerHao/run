@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>仕高利達-登入</title>
+    <script src="js/lib/socket.io/socket.io.js"></script>	
+	<script src="js/lib/jquery-2.0.3.min.js"></script>  
+    <script src="js/game.js"></script>	
+</head>
+<body>
+
+<p>請輸入序號:</p>>
+<input id="code" type="text">
+<button id="login">登入</button>>
+
+<script type="text/javascript">
+	$("#login").click(function(){
+		var code =  $("#code").val();
+		game.login(code, function(err, data){
+			if (err) {
+				return alert('序號錯誤');
+			}
+			window.location.href = "game.html?pid="+data.pid;
+		});
+	});
+</script>>
+</body>
+</html>

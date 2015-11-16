@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>仕高利達報名</title>
+    <script src="../js/lib/socket.io/socket.io.js"></script>
+    <script src="../js/lib/jquery-2.0.3.min.js"></script>  
+    <script src="../js/signin.js"></script>    
+    <script src="../js/game.js"></script>      
+  </head>
+
+  <body>
+    登入FB報名遊戲
+    <br>
+    <fb:login-button scope="publish_actions" onlogin="checkLoginState();">
+    </fb:login-button>
+    <div id="status">
+    </div>
+  </body>
+</html>

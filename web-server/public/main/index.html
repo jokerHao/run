@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<!-- saved from url=(0055)http://examples.phaser.io/embed.php?f=games/invaders.js -->
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+    <title>仕高利達 遊戲</title>
+    <meta name="viewport" content="initial-scale=1 maximum-scale=1 user-scalable=0 minimal-ui">
+    <script src="../js/lib/jquery-2.0.3.min.js" type="text/javascript"></script>
+    <script src="../js/lib/phaser.2.4.4.min.js" type="text/javascript"></script>
+    <script src="../js/lib/socket.io/socket.io.js"></script>
+    <script src="../js/game.js"></script>      
+    <style>
+    body {
+        margin: 0px;
+        padding: 0px;
+        font-family: Arial;
+        font-size: 14px;
+        background-color: #000000;
+        color: #fff;
+    }
+    
+    canvas {
+        margin: auto;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="phaser-example"></div>
+    <script type="text/javascript">
+
+    var update_players = function(err, data) {
+        if (!data)
+            return;
+        players = data;
+        var idx = 0;
+        for (var i in players) {
+            players[i].obj = players_obj[idx];
+            players[i].speed = 0;
+            players[i].last_spd = 0;
+            idx++;
+        }
+    };
+    var update;
+    var update_score = function() {
+        game.get_score(function(err, data) {
+            for (var pid in data) {
+                var now_spd = data[pid];
+                var p = players[pid];
+                p.speed += now_spd - p.last_spd;
+                p.last_spd = now_spd;
+            }
+        });
+    };
+
+    var start = function(err, data) {
+        update = setInterval("update_score()", 1000);
+    };
+
+    var player_in = function(err, data) {
+        $("#" + data.pid).text("上場");
+    };
+
+    game.monitor(update_players, start, player_in);
+    game.get_gameing(function(err, data) {
+        if (!data) {
+            return;
+        }
+
+        if (data.start) {
+            start();
+        }
+        update_players(data.players);
+    });
+
+
+    var players = null;
+    var players_obj = [];
+    // ------
+    var game = new Phaser.Game(720, 1280, Phaser.AUTO, 'phaser-example', {
+        'preload': preload,
+        'create': create,
+        'update': update,
+        'render': render
+    });
+
+
+    function preload() {
+        game.load.image('background', 'assets/player/start_background.png');
+        game.load.image('player', 'assets/player/bg.png');
+
+        for (var i = 0; i < 10; i++) {
+            game.load.image('open_' + i, 'assets/open/' + i + '.png');
+        }
+    }
+
+    function create() {
+        //  The scrolling starfield background
+        var background = game.add.tileSprite(0, 0, 720, 1280, 'background');
+
+        var players = game.add.group();
+        players.enableBody = true;
+        players.createMultiple(6, 'player');
+        for (var i = 0; i <= 6; i++) {
+            var p = players.getFirstExists(false);
+            if (p) {
+                p.reset(20 + i * 115, 1115);
+                // p.body.velocity.y = -400;
+                players_obj.push(p);
+            }
+        }
+    }
+
+    function update() {
+        // console.log('update');
+        for (var i in players) {
+            var p = players[i];
+            p.obj.body.velocity.y = p.speed;
+        }
+    }
+
+    function render() {
+
+    }
+
+    function restart() {
+
+    }
+    </script>
+</body>
+
+</html>
