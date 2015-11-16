@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>仕高利達 - 報名</title>
+    <script src="js/lib/socket.io/socket.io.js"></script>	
+	<script src="js/lib/jquery-2.0.3.min.js"></script>  
+    <script src="js/game.js"></script>	
+</head>
+<body>
+
+暱稱:
+<input type="text" id="name"/>
+
+桌號:
+<input type="number" id="table_num">
+<button id="go">報名</button>
+
+<script type="text/javascript">
+
+$("#go").click(function(){
+    var name = $("#name").val();
+    var table_num = $("#table_num").val();
+    game.register(name, table_num, function(err, data){
+      if (err) {
+        document.getElementById('status').innerHTML = '報名失敗 !';
+      }
+      else {
+        document.getElementById('status').innerHTML = '報名成功 : ' + name + '!';
+      }
+	});
+});
+
+</script>
+<div id="status">
+</div>
+</body>
+</html>
