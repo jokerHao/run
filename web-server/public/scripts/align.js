@@ -1,6 +1,8 @@
 var CasaAlign = function()
 {
-	var $win = $(window),wid,hei,
+	var $win = $(window);
+	var wid;
+	var hei;
 	$im = $('#im');
 	$int = $('#inputText');
 	$pc = $int.find('#pinCode');

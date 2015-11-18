@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>仕高利達 - 報名失敗</title>
+    <meta name="keywords" content="仕高利達 - 怎麼搭都好吃">
+    <meta content="width=device-width, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta property="og:title" content="仕高利達 - 怎麼搭都好吃" />
+    <meta property="og:description" content="仕高利達 - 怎麼搭都好吃" />
+    <meta property="og:type" content="website" />
+    <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+    <style type="text/css">
+    html {
+    	max-width: 100%;
+    	max-height: 100%;
+        background-color: #6f4819;
+    }
+    body {
+        background: url(../images/join/fail.png) 0 0 no-repeat;
+        background-size: 100%;
+        margin: 0 auto;
+        width: 100%;
+        height: 726px;
+    }
+    </style>
+</head>
+<body>
+	<script type="text/javascript">
+	var $win = $(window);
+	var $body = $("body");
+	var resize = function() {
+		console.log('123');
+		$body.css({
+			'height': $win.width()/385*726
+		});
+	}
+	$win.resize(resize);
+	resize();
+	</script>
+</body>
+</html>

@@ -1,107 +1,6 @@
-var Socket = function() {
-	this.io;
-	this.sockets = {};
-	this.handlers = {};
-}
-Socket.prototype.start = function (server) {
- 	this.io = require('socket.io').listen(server);	
- 	var self = this;
-	this.io.on('connection', function(socket){
-	  console.log('user connected ',socket.id);
-	  self.sockets[socket.id] = socket;
-
-		// 
-		socket.__on = socket.on;
-		socket.__emit = socket.emit;
-		socket.on = function (channel, next) {
-			socket.__on(channel, function(msg){
-				console.log('[on] channel: ' + channel + ' data: ',msg);				
-				next(msg);
-			});
-		};
-		socket.emit = function (channel, data) {
-			console.log('[emit] channel: ' + channel + ' data: ',data);
-		  socket.__emit(channel, data);
-		};		
-
-		// request response 機制
-		// msg {'api':"", 'data':{}, 'id':0}
-	  socket.on('request', function(msg){
-	  	var handler = socket.handlers[msg.api];
-	  	if (handler) {
-	  		handler.call(socket, msg.data, function(err, data){
-	  			socket.emit('response', {'id':msg.id, 'err':err, 'data':data});
-	  		});
-	  	}
-	  });
-		socket.handlers = {};
-		socket.handle = function (api, handler) {
-			socket.handlers[api] = handler;
-		};
-
-	  socket.on('disconnect', function(){
-	    console.log('user disconnected ', socket.id);	  	
-	  	delete self.sockets[socket.id];
-	  });
-
-		// setup handler
-	  for (var i in self.handlers) {
-	  	socket.handle(i, self.handlers[i]);
-	  }
-	});
-}
-Socket.prototype.handle = function (api, handler) {
-	this.handlers[api] = handler;
-};
-// ----
-
-var Game = function (players, monitor) {
-	this.players = {};
-	for (var i in players) {
-		var p = players[i];
-		this.players[p.id] = p;
-	}
-	this.score = {};
-	this.monitor = monitor;
-	console.log(this.monitor)
-	// 將狀態改為準備
-	for (var i in this.players) {
-		this.players[i].state = 1;
-		this.score[i] = 0;
-	}
-	console.log('Game init');
-	console.log(this.players);
-	this.start = false;
-	if (this.monitor) {
-		this.monitor.emit('game_ready', {'err':null, 'data':this.players});
-	}
-};
-Game.prototype.player_ready = function (pid) {
-	// 狀態改為上場
-	this.players[pid].state = 2;
-	if (this.monitor)
-		this.monitor.emit('player_ready', {'err':null, 'data':{'pid':pid}});
-
-	for (var i in this.players) {
-		if (this.players[i].state!=2) {
-			return;
-		}
-	}
-	// game start
-	this.start = true;
-	if (this.monitor)
-		this.monitor.emit('game_start', {'err':null, 'data':null});	
-}
-Game.prototype.run = function (pid, speed) {
-	if (this.start)
-		this.score[pid] += speed;
-};
-Game.prototype.end = function () {
-	// 將狀態改為休息
-	for (var i in this.players) {
-		this.players[i].state = 3;
-	}
-}
+var Socket = require('./lib/socket.js');
+var Game = require('./lib/game.js');
+var socket = new Socket();
 
 // -----------------------
 // 應用層
@@ -110,7 +9,6 @@ Game.prototype.end = function () {
 var app = {};
 var pid = 0;
 var players = {};
-var socket = new Socket();
 var reg_state = 0;
 var config = {
 	'player' : 2
@@ -143,7 +41,7 @@ socket.handle('login', function(msg, callback){
 	var player = getPlayerByCode(msg.code);
 	callback();
 
-	if (player && player.state==1) {
+	if (player && (player.state==1 || player.state==2)) {
 		player.state=2;
 		callback(null, {'pid':player.id});
 		gameing.player_ready(player.id);		
@@ -208,6 +106,6 @@ socket.handle('start', function(msg, callback){
 });
 
 app.start = function (server) {
-	socket.start(server);
+	socket.init(server);
 }
 module.exports = app;

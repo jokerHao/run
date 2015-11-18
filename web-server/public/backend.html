@@ -18,16 +18,19 @@
         game.get_players(function(err, data){
           $('#tab_players tbody').remove();
           var str = "";
+
+          var num = 1;
           for (var i in data) {
             var d = data[i];
             state = d.state==0 ? "等待" : d.state==1 ? "準備" : d.state==2 ? "上場" : "休息";
             str += "<tr>";
-            str += "<td>" + d.id + "</td>";
+            str += "<td>" + num + "</td>";
             str += "<td>" + d.name + "</td>";
             str += "<td>" + d.table_num + "</td>";
             str += "<td>" + state + "</td>";
             str += "<td>" + d.code +"</td>";
             str += "</tr>";
+            num ++;
           }
           $('#tab_players').append(str);
         });
@@ -75,7 +78,7 @@
       <table border="1" id="tab_players">
         <thead>
           <tr>
-            <th>id</th>
+            <th>編號</th>
             <th>暱稱</th> 
             <th>桌號</th>
             <th>狀態</th>
