@@ -34,18 +34,21 @@ game.run = function (pid, speed) {
 
 // for display client
 game.monitor = function (ready, start, playerin) {
-	socket.on('player_ready', function(data){
-		console.log('player_ready 123');
-		playerin(data.err, data.data);
-	});
+
+	// 抽籤完畢
 	socket.on('game_ready', function(data){
-		console.log(data);
 		ready(data.err, data.data);
 	});
+
+	// 玩家登入
+	socket.on('player_ready', function(data){
+		playerin(data.err, data.data);
+	});
+
+	// 遊戲開始
 	socket.on('game_start', function(data){
 		start(data.err, data.data);
 	});
-
 	socket.request('monitor', null, function(err, data){
 
 	});
@@ -56,6 +59,13 @@ game.get_gameing = function (callback) {
 game.get_score = function (callback) {
 	socket.request('get_score', null, callback);
 }
+game.client_ok = function (callback) {
+	socket.request('client_ok', null, callback);
+}
+game.getStatus = function (callback) {
+	socket.request('getStatus', null, callback);
+}
+
 
 // backend
 game.init = function () {

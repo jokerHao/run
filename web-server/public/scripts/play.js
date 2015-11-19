@@ -25,7 +25,7 @@ function init()
 		left = false;
 		right = false;
 		speed++;
-		if (speed>=5) {
+		if (speed>=3) {
 			var val = speed;
 			speed = 0;
 			game.run(pid, val, function(){});		

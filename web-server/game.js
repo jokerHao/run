@@ -11,7 +11,7 @@ var pid = 0;
 var players = {};
 var reg_state = 0;
 var config = {
-	'player' : 2
+	'player' : 6
 }
 var gameing = null;
 var monitor;
@@ -25,17 +25,47 @@ var getPlayerByCode = function (code) {
 	return null;
 }
 
+var getCode = function () {
+	var code = Math.floor((Math.random() * 1000));
+	code = code < 100 ? code + 100 : code;
+	return code;
+}
+
+var getTimestamp = function () {
+	return Math.floor(Date.now() / 1000);
+}
+
 // mobile
 socket.handle('register', function(msg, callback){
 	if (reg_state==0) {
 		return callback(200, null);
 	}
-	pid ++;
-  var code = Math.floor((Math.random() * 1000));
-  code = code < 100 ? code + 100 : code;
 
-	players[pid] = {'id':pid, 'name':msg.name, 'table_num':msg.table_num, 'order':Math.random(), 'state':0, 'code':code};
-	callback(null, {'id':pid});
+	// 確保序號不重複
+	var code = 0;
+	while (true) {
+		code = getCode();
+		if (!getPlayerByCode(code)) {
+			break;
+		}
+	}
+
+	// 註冊時間
+	var time = getTimestamp();
+
+	// 抽籤順序
+	var order = Math.random();
+	pid ++;
+	players[pid] = {
+		'id': pid, 
+		'name': msg.name, 
+		'table_num': msg.table_num, 
+		'order': order, 
+		'state': 0, 
+		'code': code, 
+		'reg_time': time
+	};
+	callback(null, {'pid':pid});
 });
 socket.handle('login', function(msg, callback){
 	var player = getPlayerByCode(msg.code);
@@ -65,6 +95,9 @@ socket.handle('get_score', function(msg, callback){
 socket.handle('get_gameing', function(msg, callback){
 	callback(null, gameing ? {'start':gameing.start, 'players':gameing.players} : null);
 });
+socket.handle('client_ok', function(msg, callback){
+	gameing.client_ok();
+});
 
 // backend
 socket.handle('init', function(msg, callback){
@@ -86,6 +119,7 @@ socket.handle('reg_off', function(msg, callback){
 	reg_state = 0;
 	callback();
 });
+// 抽籤
 socket.handle('opening', function(msg, callback){
 	// 抽等待中的玩家
 	var ary = [];
@@ -93,6 +127,11 @@ socket.handle('opening', function(msg, callback){
 		if (players[i].state==0)
 			ary.push(players[i]);
 	}
+
+	if (ary.length<config.player) {
+		return callback(200);
+	}
+
 	ary.sort(function(a,b){return a.order-b.order});
 	while(ary.length>config.player) {
 		ary.pop();
@@ -102,8 +141,16 @@ socket.handle('opening', function(msg, callback){
 	callback();
 });
 socket.handle('start', function(msg, callback){
-	callback();
+	var err = gameing!=null ? gameing.start() : '尚未開局';
+	callback(err);
 });
+socket.handle('getStatus', function(msg, callback){
+	var data = gameing!=null ? gameing.getStatus() : null;
+	callback(null, err);
+});
+
+
+
 
 app.start = function (server) {
 	socket.init(server);

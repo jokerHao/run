@@ -11,6 +11,7 @@
     <script src="../js/lib/phaser.2.4.4.min.js" type="text/javascript"></script>
     <script src="../js/lib/socket.io/socket.io.js"></script>
     <script src="../js/game.js"></script>
+    <script src="./scripts/state_start.js"></script>
     <style>
     body {
         margin: 0px;
@@ -30,9 +31,6 @@
 <body>
     <div id="phaser-example"></div>
     <script type="text/javascript">
-    // $(window).resize(function() {
-    //     $("body").prepend("<div>" + $(window).height() + "</div>");
-    // });
 
     var bg_width = 720;
     var bg_height = 1280;
@@ -45,122 +43,366 @@
         phaser.height = height;
     }
 
-    $(window).resize(function() { resizeGame(); });
-    $(window).ready(function() { resizeGame(); });
+    // pid: data
+    var players = {}; 
+    // pid: obj
+    var players_obj = {};
 
-    var players = null;
-    var players_obj = [];
+    var phaser;
+    var self = this;
+    var state_start;
 
-    var update_players = function(err, data) {
-        if (!data)
-            return;
-        console.log('update_players');
-        players = data;
-        var idx = 0;
-        for (var i in players) {
-            console.log(i);
-            players[i].obj = players_obj[idx];
-            players[i].speed = 0;
-            players[i].last_spd = 0;
-            idx++;
-        }
-    };
-    var update;
-    var update_score = function() {
-        game.get_score(function(err, data) {
-            console.log('fuck');
-            console.log(players);
-            for (var pid in data) {
-                var now_spd = data[pid];
-                var p = players[pid];
-                if (!p.last_spd) {
-                    p.last_spd = now_spd;
-                }
-                console.log(now_spd + '  ' + p.last_spd);
-                p.speed += (now_spd - p.last_spd) * 100;
-                p.last_spd = now_spd;
-            }
-        });
-    };
-
-    var slow = function() {
-        for (var i in players) {
-            var p = players[i];
-            p.speed -= 10;
-            if (p.speed <= 0) {
-                p.speed = 0;
-            }
-        }
-    }
-
-    var start = function(err, data) {
-        // update = setInterval("update_score()", 200);
-        setInterval("slow()", 50);
-    };
-
-    var player_in = function(err, data) {
-        $("#" + data.pid).text("上場");
-    };
-
-    console.log(window);
-    // ------
-    var phaser = new Phaser.Game(bg_width, bg_height, Phaser.AUTO, 'phaser-example', {
+    phaser = new Phaser.Game(bg_width, bg_height, Phaser.AUTO, 'phaser-example', {
         'preload': preload,
         'create': create,
         'update': update,
         'render': render
     });
-
-
-    function preload() {
-        phaser.load.image('background', 'assets/player/start_background.png');
-        phaser.load.image('player', 'assets/player/bg.png');
-
-        for (var i = 0; i < 10; i++) {
-            phaser.load.image('open_' + i, 'assets/open/' + i + '.png');
+    self.phaser = phaser;
+    state_start = new StateStart(phaser, 60, 
+    // 倒數改變
+    function (val)  {
+        if (val%10==0) {
+            // 每十加一個玩家
+            addPlayer();
+            // // 預設頭像
+            // var img = phaser.add.sprite(0, 0, "player_default");
+            // img.parent = p; 
+            // this.players[i] = p;
+        }                        
+        if (val==0) {
+            console.log('client_ok')
+            // 剛倒數完 通知server client表演結束
+            game.client_ok();
         }
+        // console.log(val);
+    });
+
+    function preload () {
+        // 遊戲背景
+        phaser.load.image('background', 'assets/background.png');
+
+        // 皇冠6個
+        phaser.load.image('rank', 'assets/rank/background.png');        
+        for (var i=0; i<6; i++) {
+            phaser.load.image('rank' + i, 'assets/rank/' + i + '.png');            
+        }
+
+        // 食物7個
+        for (var i=0; i<7; i++) {
+            phaser.load.image('food' + i, 'assets/food/' + i + '.png');            
+        }
+
+        // 玩家
+        phaser.load.image('player', 'assets/player/background.png');
+        phaser.load.image('player_default', 'assets/player/default.png');
+        phaser.load.image('player_table', 'assets/player/table.png');
+
+        phaser.load.image('start_dish', 'assets/start_dish.png');
+        state_start.preload();
     }
 
+
+    var POBJS = [];
+    var dishs = [];
+
+    // var start_dish;
+
     function create() {
-        //  The scrolling starfield background
-        var background = phaser.add.tileSprite(0, 0, bg_width, bg_height, 'background');
+
+        start_dish = phaser.add.group();
+        start_dish.enableBody = true;
+        start_dish.createMultiple(1000, 'start_dish');
+
+        phaser.physics.startSystem(Phaser.Physics.ARCADE);
+
+        // 創建背景
+        phaser.add.sprite(0, 0, 'background');
+
+       // var ps = phaser.add.group();
+       //  ps.enableBody = true;
+       //  ps.createMultiple(6, 'player');
+       //  for (var i = 0; i <= 6; i++) {
+       //      var p = ps.getFirstExists(false);
+       //      if (p) {
+       //          p.reset(20 + i * 115, 1115);
+       //          p.body.velocity.y = -400;
+       //          players_obj.push(p);
+       //      }
+       //  }
+
+
+
+
 
         var ps = phaser.add.group();
         ps.enableBody = true;
-        ps.createMultiple(6, 'player');
-        for (var i = 0; i <= 6; i++) {
+        ps.createMultiple(7, 'player');
+ 
+        for (var i = 0; i < 6; i++) {
             var p = ps.getFirstExists(false);
             if (p) {
                 p.reset(20 + i * 115, 1115);
+                p.visible = false;
+                // p.body.velocity.y = -100;
+
+                dishs[i] = [];
+                for (var ii=0; ii<70; ii++) {
+                    var obj = phaser.add.sprite(0, 0, 'start_dish');
+                    // var obj = start_dish.getFirstExists(true);
+                    // var ny = last_dish[idx] + 50;
+
+                    obj.reset(20 + i * 115 + 20*Math.random(), 1115 - ii*15);
+                    obj.visible = false;
+                    dishs[i].push(obj);                    
+                }
+                // last_dish[idx]=ny;
+
                 // p.body.velocity.y = -400;
-                players_obj.push(p);
+                POBJS.push(p);
             }
         }
 
-        game.monitor(update_players, start, player_in);
-        game.get_gameing(function(err, data) {
-            if (!data) {
-                return;
+
+
+
+
+
+        // 開始摟
+        game.monitor(
+            function (err, data) {
+                console.log("開始倒數 秀玩家")
+                // 剛抽完籤，開始倒數
+                state_start.start();
+                players = data;
+                for (var i in players) {
+                    players[i].speed = 0;
+                    players[i].last_spd = 0;
+                }
+            }, 
+            function (err, data) {
+                // 客戶端表演結束 加上玩家都登入成功 即開始遊戲
+                console.log("比賽開始");
+                // 關閉開場倒數表演
+                state_start.end();            
+                // 開始更新玩家分數
+                gameSTART();
+            }, 
+            function (err, data) {
+                
             }
-            update_players(null, data.players);
-            if (data.start) {
-                start();
-            }
-        });
+        );
+
+
+      // var idx = 0;
+      //   for (var i in players_obj) {
+      //       var po = players_obj[i];
+
+      //       var y = po.previousPosition.y;
+
+      //       if ((last_dish[idx] - y) > 50) {
+      //           console.log('++');
+      //           var obj = phaser.add.sprite(0, 0, 'start_dish');
+      //           // var obj = start_dish.getFirstExists(false);
+      //           var ny = last_dish[idx] + 50;
+      //           obj.reset(20 + idx * 115, ny);
+      //           last_dish[idx]=ny;
+      //       }
+
+      //       idx++;
+      //   }
+
+
+
+        food();
+
+        $(window).resize(function() { resizeGame(); });
         window.resizeGame();
+
+
+        state_start.create();
     }
 
+    var END = false;
+    var y = {};
     function update() {
-        // console.log('update');
-        for (var i in players) {
-            var p = players[i];
-            p.obj.body.velocity.y = p.speed * -1;
+        if (END) {
+            return;
         }
+        var y = [];
+        for (var pid in players) {
+            var p = players[pid];
+            var obj = players_obj[pid];
+
+            // console.log(pid+" : "+p.speed+ "  "+obj.previousPosition.y);
+            players_obj[pid].body.velocity.y =  p.speed * -1;//p.speed;
+
+            y.push([pid, players_obj[pid].previousPosition.y]);
+        }
+
+
+        for (var i in y) {
+            if (y[i][1]<80) {
+                // GAME END
+                END = true;
+            }
+        }
+
+        if (END) {
+            y.sort(function(a,b){
+                return b[1] - a[1];
+            });            
+            console.log('END');
+            // console.log(y);
+            var rrr = 0;
+            for (var i in players_obj) {
+                var obj = players_obj[i];
+                obj.body.velocity.y = 0;
+
+
+                var rank = phaser.add.sprite(0, 0, 'rank');
+                rank.parent = obj;
+                rank.anchor.setTo(0,1);
+                var r = phaser.add.sprite(37, -22, 'rank'+rrr);
+                r.parent = rank;            
+
+                rrr++;
+            }
+        }
+
+
     }
 
     function render() {
 
     }
+
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function getRoule () {
+        var result = [];
+        result.push([900, 500, 200, 450, 300]);
+        result.push([140, 200, 350, 380, 800]);
+        result.push([350, 600, 420, 800, 200]);
+        result.push([800, 380, 250, 600, 230]);
+        result.push([800, 550, 400, 720, 230]);
+        result.push([800, 900, 230, 530, 720]);
+        var idx = getRandomInt(0, result.length-1);
+        return result[idx];
+    }
+
+    function food () {
+        for (var i = 0; i <= 6; i++) {
+            var ary = getRoule();
+            for (var ii in ary) {
+                var idx = getRandomInt(0,5);                
+                var p = phaser.add.sprite(0, 0, 'food'+idx);   
+                p.reset(20 + i * 115, ary[ii]);
+            }
+        }             
+    }
+
+    function gameSTART () {
+
+
+        setInterval(function() {
+            if (END)
+                    return;
+            game.get_score(function(err, data) {
+
+                for (var pid in data) {
+                    var now_spd = data[pid];
+                    var p = players[pid];
+                    if (!p.last_spd) {
+                        p.last_spd = now_spd;
+                    }
+                    // console.log(now_spd + '  ' + p.last_spd);
+                    p.speed += (now_spd - p.last_spd) * 100;
+                    p.last_spd = now_spd;
+                }
+            });
+        }, 200);
+
+        // 減速
+        setInterval(function() {
+            if (END)
+                    return;
+            for (var i in players) {
+                var p = players[i];
+                p.speed -= 25;
+                if (p.speed <= 0) {
+                    p.speed = 0;
+                }
+            }                    
+        }, 20);   
+
+         setInterval(function() {
+            if (END)
+                return;
+            // 盤子
+            for (var i in POBJS) {
+                var y = POBJS[i].previousPosition.y;
+                for (var ii in dishs[i]) {
+                    if (dishs[i][ii].previousPosition.y - 80 > y) {
+                        dishs[i][ii].visible = true;
+                    }
+                }
+            }
+  
+        }, 300);
+
+    }
+    var last_dish = [0,0,1060,1060,1060,1060];
+
+
+    function addPlayer () {
+
+        // for (var i=0; i<6; i++) {
+            var i = Object.keys(players_obj).length;
+            var pid = Object.keys(players)[i];
+            var P = players[pid];
+            if (pid) {
+                console.log("add user: "+i+"  pid: "+pid);
+
+                var p = POBJS[i];
+                p.reset(20 + i * 115, 1060);
+                p.visible = true;
+                players_obj[pid] = p;
+
+                // 桌號底板
+                var tb = phaser.add.sprite(0, 0, 'player_table');
+                tb.anchor.setTo(0.5, 0.5);            
+                tb.parent = p;
+                tb.reset(8, 8);
+
+                // 桌號文字
+                var tt = phaser.add.text(0, 0, P.table_num, {
+                            font: '16px Arial', 
+                            fill: '#5A3616', 
+                            align: 'center', 
+                            strokeThickness:1
+                        });
+                tt.anchor.setTo(0.5, 0.5);
+                tt.parent = tb;            
+                tt.reset(0, 1);
+
+                // 名稱
+                var pn = phaser.add.text(0, 0, P.name, {
+                            font: '16px Arial', 
+                            fill: '#5A3616', 
+                            align: 'center', 
+                            strokeThickness:1
+                        });
+                pn.anchor.setTo(0.5, 0.5);            
+                pn.parent = p;
+                pn.reset(50, 102);
+
+            }
+        // }
+    }
+
     </script>
 </body>
 

@@ -18,6 +18,10 @@
     <script type="text/javascript" src="scripts/play.js"></script>
     <script type="text/javascript" src="js/lib/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="js/game.js"></script> -->
+
+    <script type="text/javascript" src="js/lib/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="js/game.js"></script>
+
     <style type="text/css">
     #center {
         max-width: 400px;
@@ -126,7 +130,13 @@
 
     var join = function() {
         var name = $("#name input").val();
-        var table = $("table input").val();
+        var table = $("#table input").val();
+        game.register(name, table, function(err, data){
+            if (err) {
+                return window.location.href = "/join_fail.html";
+            }
+            window.location.href = "/fb_share.html?pid="+data.pid;
+        });
     };
     </script>
     <div id="container">
@@ -145,8 +155,8 @@
                 <button id="btn_join" onclick="join()"></button>
             </div>
         </div>
-        <img id="im" src="images/footer.png">
     </div>
+    <img id="im" src="images/footer.png">    
 </body>
 
 </html>
