@@ -46,7 +46,7 @@ StateStart.prototype.create = function () {
 StateStart.prototype.start = function () {
     var self = this;
     this.setTime(this.start_at);
-    this.interval = setInterval(function(){ self.run(); }, 1000);	
+    this.interval = setInterval(function(){ self.run(); }, 100);	
 };
 
 StateStart.prototype.update = function () {

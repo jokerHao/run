@@ -1,0 +1,8 @@
+{
+	"PLAYER_STATE": {
+		"IDLE": 0,
+		"PREPARE": 1,
+		"PLAY": 2,
+		"QK": 3
+	}
+}

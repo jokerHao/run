@@ -16,7 +16,9 @@ function init()
 	        params[nv[0]] = nv[1] || true;
 	    }
 	}
-	var pid = params.pid;
+
+
+	var uid = params.uid;
 	var right = true;
 	var left = true;
 	var speed = 0;
@@ -28,7 +30,7 @@ function init()
 		if (speed>=3) {
 			var val = speed;
 			speed = 0;
-			game.run(pid, val, function(){});		
+			game.run(uid, val, function(){});		
 		}
 	}
 
@@ -44,5 +46,7 @@ function init()
 			run();
 		}
 	});	
+
+	game.login(uid, function(){});
 }
 $(init);

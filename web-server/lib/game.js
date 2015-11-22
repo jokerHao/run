@@ -1,9 +1,4 @@
-var STATE = {
-	'IDLE': 0,
-	'PREPARE': 1,
-	'PLAY': 2,
-	'QK': 3
-}
+var config_game = require('../config/game.json');
 
 var Game = function (players, monitor) {
 	this.b_start = false;
@@ -17,23 +12,30 @@ var Game = function (players, monitor) {
 	this.monitor = monitor;
 	// 將狀態改為準備
 	for (var i in this.players) {
-		this.players[i].state = STATE.PREPARE;
+		this.players[i].state = config_game.PLAYER_STATE.PREPARE;
 		this.score[i] = 0;
 	}
 	console.log('Game init');
 	console.log(this.players);
 	this.monitor.emit('game_ready', {'err':null, 'data':this.players});
 };
+
 // 玩家登入遊戲
-Game.prototype.player_ready = function (pid) {
+Game.prototype.player_login = function (pid) {
 	// 狀態改為上場
-	this.players[pid].state = STATE.PLAY;
-	this.monitor.emit('player_ready', {'err':null, 'data':{'pid':pid}});
+	this.players[pid].state = config_game.PLAYER_STATE.PLAY;
+	this.monitor.emit('player_login', {'err':null, 'data':{'pid':pid}});
+}
+// 玩家斷線
+Game.prototype.player_logout = function (pid) {
+	// 狀態改為準備
+	this.players[pid].state = config_game.PLAYER_STATE.PREPARE;
+	this.monitor.emit('player_logout', {'err':null, 'data':{'pid':pid}});
 }
 // 後台啟動遊戲，等待遊戲回送確認就開始
 Game.prototype.start = function () {
 	for (var i in this.players) {
-		if (this.players[i].state != STATE.PLAY) {
+		if (this.players[i].state != config_game.PLAYER_STATE.PLAY) {
 			console.log('有參賽玩家尚未登入');
 			return '有參賽玩家尚未登入';
 		}
@@ -42,7 +44,7 @@ Game.prototype.start = function () {
 		console.log('客戶端尚未完成表演');
 		return '客戶端尚未完成表演';
 	}
-	this.b_start = true;;
+	this.b_start = true;
 	this.monitor.emit('game_start', {'err':null, 'data':null});	
 	return null;
 }
@@ -65,7 +67,7 @@ Game.prototype.run = function (pid, speed) {
 Game.prototype.end = function () {
 	// 將狀態改為休息
 	for (var i in this.players) {
-		this.players[i].state = STATE.QK;
+		this.players[i].state = config_game.PLAYER_STATE.QK;
 	}
 }
 

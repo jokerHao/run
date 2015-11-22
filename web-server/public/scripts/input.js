@@ -10,11 +10,11 @@ var CasaInput = function()
 		$pc.blur(function(){
 			isInput = false;
 			var code = $pc.val();
-			game.login(code, function(err, data){
+			game.auth(code, function(err, data){
 				if (err) {
 					return alert('序號錯誤');
 				}
-				window.location.href = "play.html?pid="+data.pid;
+				window.location.href = "play.html?uid="+data.uid;
 			});
 		})
 	}

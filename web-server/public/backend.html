@@ -98,7 +98,9 @@ $(document).ready(function() {
     update_status();
 
     $(".update").click(function(){
-        update_players();
+        setTimeout(function(){
+            update_players();
+        }, 500);
     });
 });
 
@@ -115,7 +117,11 @@ var test2 = function () {
     for (var i in players) {
         if (players[i].state==1 && ii<5) {
             ii++;
-            game.login(players[i].code);
+            game.auth(players[i].code, function(err, data){
+                game.login(data.uid, function(){
+                    
+                });
+            });
         }
     }
 }
