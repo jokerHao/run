@@ -118,9 +118,8 @@
     }
 
 
-    var POBJS = [];
     var dishs = [];
-
+    var foods = [];
 
     // var start_dish;
 
@@ -239,9 +238,9 @@
     function getRoule() {
         var result = [];
         result.push([900, 500, 200, 450, 300]);
-        result.push([140, 200, 350, 380, 800]);
+        result.push([280, 200, 700, 380, 800]);
         result.push([350, 600, 420, 800, 200]);
-        result.push([800, 380, 250, 600, 230]);
+        result.push([800, 380, 250, 600, 500]);
         result.push([800, 550, 400, 720, 230]);
         result.push([800, 900, 230, 530, 720]);
         var idx = getRandomInt(0, result.length - 1);
@@ -250,12 +249,15 @@
 
     // 產生食物
     function food() {
-        for (var i = 0; i <= 6; i++) {
+        for (var i = 0; i < 6; i++) {
+            foods[i] = [];
             var ary = getRoule();
             for (var ii in ary) {
                 var idx = getRandomInt(0, 5);
                 var p = phaser.add.sprite(0, 0, 'food' + idx);
-                p.reset(20 + i * 115, ary[ii]);
+                p.reset(0 + i * 115, ary[ii]);
+                p.anchor.setTo(0, 1);
+                foods[i].push(p);
             }
         }
     }
@@ -274,11 +276,11 @@
             });
         }, 200);
 
+        // 盤子追
         setInterval(function() {
             if (state!=STATE.PLAY) {
                 return;
             }
-            // 盤子追
             for (var i=0; i<6; i++) {
                 var p = getPlayerByIdx(i);
                 var y = p.body.y;
@@ -291,6 +293,23 @@
 
         }, 1000);
 
+        // 消滅食物
+        setInterval(function() {
+            if (state!=STATE.PLAY) {
+                return;
+            }
+            for (var i in foods) {
+                var p = getPlayerByIdx(i);
+                for (ii in foods[i]) {
+                    if (foods[i][ii].y > p.body.y) {
+                        foods[i][ii].visible = false;
+                    }
+                }
+            }
+
+        }, 500);        
+
+        // 檢測勝利
         setInterval(function() {
             if (state!=STATE.PLAY) {
                 return;

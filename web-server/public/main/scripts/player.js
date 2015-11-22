@@ -81,5 +81,5 @@ Player.prototype.end = function (r) {
     rank.anchor.setTo(0, 1);
     var r = this.phaser.add.sprite(37, -22, 'rank' + r);
     r.parent = rank;    
-};
+}
 

@@ -111,15 +111,14 @@ var test = function () {
 }
 
 var players;
-var test2 = function () {
-
+var login = function (count) {
     var ii = 0; 
     for (var i in players) {
-        if (players[i].state==1 && ii<5) {
+        if (players[i].state==1 && ii<count) {
             ii++;
             game.auth(players[i].code, function(err, data){
                 game.login(data.uid, function(){
-                    
+                    update_players();
                 });
             });
         }
@@ -139,7 +138,8 @@ var test2 = function () {
         <button class="update" onclick="pick6();">抽選6人</button>
         <button onclick="start()">開始遊戲</button>
         <button class="update" onclick="test()">12人報名</button>
-        <button class="update" onclick="test2()">5人上場</button>        
+        <button class="" onclick="login(5)">5人登入</button>    
+        <button class="" onclick="login(4)">4人登入</button>        
     </div>
     <hr>
     <div>
