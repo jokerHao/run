@@ -84,7 +84,7 @@
 
     function preload() {
         // 遊戲背景
-        phaser.load.image('background', 'assets/background2.png');
+        phaser.load.image('background', 'assets/background.png');
 
         // 皇冠6個
         phaser.load.image('rank', 'assets/rank/background.png');
@@ -92,8 +92,8 @@
             phaser.load.image('rank' + i, 'assets/rank/' + i + '.png');
         }
 
-        // 食物7個
-        for (var i = 0; i < 7; i++) {
+        // 食物10個
+        for (var i = 0; i < 10; i++) {
             phaser.load.image('food' + i, 'assets/food/' + i + '.png');
         }
 
@@ -206,7 +206,7 @@
             resizeGame();
         });
         window.resizeGame();
-        state_start.create();
+        // state_start.create();
     }
 
     var STATE = {
@@ -242,12 +242,28 @@
     // 食物擺放
     function getRoule() {
         var result = [];
-        result.push([900, 500, 200, 450, 300]);
-        result.push([280, 200, 700, 380, 800]);
-        result.push([350, 600, 420, 800, 200]);
-        result.push([800, 380, 250, 600, 500]);
-        result.push([800, 550, 400, 720, 230]);
-        result.push([800, 900, 230, 530, 720]);
+        result.push([950, 500, 240, 700, 300]);
+        // result.push([280, 200, 700, 380, 850]);
+        // result.push([350, 600, 420, 900, 180]);
+        result.push([820, 380, 250, 600, 500]);
+        result.push([1000, 550, 850, 720, 230]);
+        result.push([930, 780, 300, 500, 680]);
+        result.push([1020, 800, 400, 550, 680]);
+        result.push([1040, 730, 950, 320, 610]);
+
+        var idx = getRandomInt(0, result.length - 1);
+        return result[idx];
+    }
+
+    // 食物擺放
+    function getRoule2() {
+        var result = [];
+        result.push([0, 2, 4, 9, 1]);
+        result.push([7, 8, 6, 5, 3]);
+        result.push([1, 6, 3, 6, 0]);
+        result.push([9, 7, 0, 2, 8]);
+        result.push([6, 1, 2, 0, 5]);
+        result.push([5, 2, 8, 3, 9]);
         var idx = getRandomInt(0, result.length - 1);
         return result[idx];
     }
@@ -257,10 +273,12 @@
         for (var i = 0; i < 6; i++) {
             foods[i] = [];
             var ary = getRoule();
+            var ary2 = getRoule2();            
             for (var ii in ary) {
-                var idx = getRandomInt(0, 5);
+                var idx = getRandomInt(0, 9);
+                var idx = ary2[ii];
                 var p = phaser.add.sprite(0, 0, 'food' + idx);
-                p.reset(0 + i * 115, ary[ii]);
+                p.reset(10 + i * 115, ary[ii]);
                 p.anchor.setTo(0, 1);
                 foods[i].push(p);
             }
@@ -279,7 +297,7 @@
                     players[pid].score = data[pid];
                 }
             });
-        }, 200);
+        }, 100);
 
         // 盤子追
         setInterval(function() {

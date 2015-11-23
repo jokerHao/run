@@ -27,7 +27,7 @@ function init()
 		left = false;
 		right = false;
 		speed++;
-		if (speed>=3) {
+		if (speed>=2) {
 			var val = speed;
 			speed = 0;
 			game.run(uid, val, function(){});		
@@ -49,4 +49,6 @@ function init()
 
 	game.login(uid, function(){});
 }
-$(init);
+$(document).ready(function(){
+	init();
+});
