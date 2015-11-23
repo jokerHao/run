@@ -70,28 +70,21 @@
         function(val) {
             if (val % 10 == 0) {
                 // 每10秒顯示一位玩家
-                // var i = Object.keys(players_obj).length;
-                // var pid = Object.keys(players)[i];
-                // if (pid) {
-                //     var p = addPlayer();
-                //     p.visible = true;
-                //     players_obj[pid] = p;                    
-                // }
                 var idx = (60-val)/10 - 1;
                 console.log('show ', idx);
                 var p = getPlayerByIdx(idx);
                 p.visible(true);
             }
             if (val == 0) {
-                console.log('倒數結束 通知Server')
+                console.log('倒數結束');
                     // 剛倒數完 通知server client表演結束
-                game.client_ok();
+                game.client_ready();
             }
         });
 
     function preload() {
         // 遊戲背景
-        phaser.load.image('background', 'assets/background.png');
+        phaser.load.image('background', 'assets/background2.png');
 
         // 皇冠6個
         phaser.load.image('rank', 'assets/rank/background.png');
@@ -148,15 +141,15 @@
         game.monitor(
             // 抽出六人
             function(err, data) {
-                console.log("六人抽出 開始倒數 秀玩家")
+                console.log("六人抽出 倒數顯示玩家..")
                 state_start.start();
 
                 // 玩家資料初始化
                 var i = 0;
                 for (var pid in data) {
                     var d = data[pid];
-                    var x = 20 + i * 115;
-                    var y = 1060;
+                    var x = 18 + i * 116;
+                    var y = 1065;
                     var p = new Player(phaser);
                     p.body.x = x;
                     p.body.y = y;
@@ -169,16 +162,25 @@
 
             // 後台控制比賽開始
             function(err, data) {    
-                console.log("比賽開始");
-                // 關閉開場倒數表演
-                state_start.end();
-                // 開始更新玩家分數
-                gameSTART();
+                console.log("開始前倒數...");
+                
+                // 開始前倒數
+                state_start.reset(10, function(val){
+                    if (val==0) {
+                        console.log('遊戲開始');
+                        state_start.end();                      
+                        game.client_start();   
+                        gameSTART();
+                    }
+                });            
             },
 
             // 玩家登入
             function(err, data) {
                 console.log("玩家登入 : ", data.pid);
+                if (state == STATE.END) {
+                    return;
+                }
                 var pid = data.pid;
                 if (pid && players[pid]) {
                     players[pid].online(true);
@@ -188,6 +190,9 @@
             // 玩家登出
             function(err, data) {
                 console.log("玩家登出 : ", data.pid);
+                if (state == STATE.END) {
+                    return;
+                }
                 var pid = data.pid;
                 if (pid && players[pid]) {
                     players[pid].online(false);
@@ -291,7 +296,7 @@
                 }
             }
 
-        }, 1000);
+        }, 300);
 
         // 消滅食物
         setInterval(function() {

@@ -16,9 +16,16 @@ var players = {};
 
 // uid : player
 var uid_map = {};
-var reg_state = 0;
 var gameing = null;
 var monitor;
+var STATE = {
+	'REGISTER': 0,		// 報名
+	"PAUSE": 	1,		// 停止報名
+	"WAIT": 	2,		// 已抽出選手 等待登入
+	"READY": 	3,		// 客戶端表演結束 且選手皆已登入
+	"PLAY": 	4		//
+};
+var state = STATE.REGISTER;
 
 var getPlayerBy = function (key, val) {
 	for (var i in players) {
@@ -54,8 +61,13 @@ socket.onDisconnect = function () {
 
 // mobile
 socket.handle('register', function(msg, callback){
-	if (reg_state==0) {
-		return callback(200, null);
+	if (state!=STATE.REGISTER) {
+		return callback(200);
+	}
+
+	// 暱稱不能重複
+	if (getPlayerBy('name', msg.name)) {
+		return callback(300);
 	}
 
 	// 確保序號不重複
@@ -112,7 +124,6 @@ socket.handle('auth', function(msg, callback){
 		}
 	}
 	player.uid = code;
-
 	callback(null, {'uid': player.uid});			
 });
 
@@ -121,7 +132,6 @@ socket.handle('auth', function(msg, callback){
 socket.handle('login', function(msg, callback){
 	var player = getPlayerBy('uid', msg.uid);
 	if (player) {
-
 		// 移除前一個登入
 		var pre_uid;
 		for (var i in uid_map) {
@@ -145,6 +155,9 @@ socket.handle('login', function(msg, callback){
 	}
 });
 socket.handle('run', function(msg, callback) {
+	if (state!=STATE.PLAY) {
+		return;
+	}
 	var player = uid_map[msg.uid];
 	if (!player) {
 		return console.log('uid fail');
@@ -155,8 +168,8 @@ socket.handle('run', function(msg, callback) {
 ////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////
 
-
-// monitor
+////////////////////////////////////////////////////////
+// 電子看板 monitor
 socket.handle('monitor', function(msg, callback){
 	monitor = this;
 	if (gameing) {
@@ -166,15 +179,31 @@ socket.handle('monitor', function(msg, callback){
 socket.handle('get_score', function(msg, callback){
 	callback(null, gameing ? gameing.score : 0);
 });
-socket.handle('get_gameing', function(msg, callback){
-	callback(null, gameing ? {'start':gameing.start, 'players':gameing.players} : null);
+// socket.handle('get_gameing', function(msg, callback){
+// 	callback(null, gameing ? {'start':gameing.start, 'players':gameing.players} : null);
+// });
+socket.handle('client_ready', function(msg, callback){
+	if (state==STATE.WAIT) {
+		state = STATE.READY;
+	}
+	else {
+		console.log('state error ',state);
+	}
 });
-socket.handle('client_ok', function(msg, callback){
-	gameing.client_ok();
+// 客戶端倒數完呼叫
+socket.handle('client_start', function(msg, callback){
+	if (state==STATE.READY) {
+		state = STATE.PLAY;
+	}
+	callback();
 });
+////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
+
 
 // backend
 socket.handle('init', function(msg, callback){
+	state = STATE.REGISTER;		
 	uid_map = {};
 	gameing = null;
 	players = {};
@@ -183,23 +212,32 @@ socket.handle('init', function(msg, callback){
 socket.handle('get_players', function(msg, callback){
 	callback(null, players);
 });
-socket.handle('get_reg_state', function(msg, callback){
-	callback(null, {'state':reg_state});
+socket.handle('get_state', function(msg, callback){
+	callback(null, {'state':state});
 });
 socket.handle('reg_on', function(msg, callback){
-	reg_state = 1;
+	if (state==STATE.PAUSE) {
+		state = STATE.REGISTER;
+	}
 	callback();
 });
 socket.handle('reg_off', function(msg, callback){
-	reg_state = 0;
+	if (state==STATE.REGISTER) {
+		state = STATE.PAUSE;
+	}
 	callback();
 });
 // 抽籤
 socket.handle('opening', function(msg, callback){
 	// 結束上一場
+	uid_map = {};
 	if (gameing) {
+		for (var i in gameing.players) {
+			gameing.players[i].uid = "";
+		}
 		gameing.end();
 	}
+	state = STATE.WAIT;	
 	// 抽等待中的玩家
 	var ary = [];
 	for (var i in players) {
@@ -221,13 +259,18 @@ socket.handle('opening', function(msg, callback){
 	// call game
 	callback();
 });
-socket.handle('start', function(msg, callback){
-	var err = gameing!=null ? gameing.start() : '尚未開局';
-	callback(err);
-});
-socket.handle('getStatus', function(msg, callback){
-	var data = gameing!=null ? gameing.getStatus() : null;
-	callback(null, err);
+socket.handle('start', function(msg, callback) {
+	if (state!=STATE.READY) {
+		return callback('state err', state);
+	}
+	// 檢查玩家是否都登入
+	if (gameing.isReady()) {
+		gameing.start();
+		callback();
+	}
+	else {
+		callback('玩家尚未登入');
+	}
 });
 
 

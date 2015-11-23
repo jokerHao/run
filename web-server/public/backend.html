@@ -59,9 +59,19 @@ var update_players = function() {
 
 
 var update_status = function() {
-    game.get_reg_state(function(err, data) {
-        $('#state').text(data.state == 1 ? "開放報名中" : "報名停止");
-        $('#state').css('color', data.state == 1 ? "green" : "red");
+    game.get_state(function(err, data) {
+        var STATE = {
+            "REGISTER": 0,      // 報名
+            "PAUSE":    1,      // 停止報名
+            "WAIT":     2,      // 已抽出選手 等待登入
+            "READY":    3,      // 客戶端表演結束 且選手皆已登入
+            "PLAY":     4       //
+        };
+
+        var state_name = ["報名中", "停止報名", "等待倒數", "等待玩家登入 - 後台啟動遊戲", "遊戲中"];
+        var state_color = ['green', 'red', 'black', 'blace', 'blue'];
+        $('#state').text(state_name[data.state]);
+        $('#state').css('color', state_color[data.state]);
     });
 };
 
@@ -80,7 +90,7 @@ var reg_off = function() {
 var start = function () {
     game.start(function(err, data){
         if (err) {
-            alert(err);
+            alert(err, data);
         }
     });
 }
@@ -132,7 +142,8 @@ var login = function (count) {
     <p id="state"></p>
     <hr>
     <div>
-        <button class="update" onclick="game.init()">清空報名</button>
+        <button onclick="update_status()">更新狀態</button>
+        <button class="update" onclick="game.init()">初始化</button>
         <button onclick="reg_on()">開放報名</button>
         <button onclick="reg_off()">停止報名</button>
         <button class="update" onclick="pick6();">抽選6人</button>

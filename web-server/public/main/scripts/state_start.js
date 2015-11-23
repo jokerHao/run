@@ -46,8 +46,21 @@ StateStart.prototype.create = function () {
 StateStart.prototype.start = function () {
     var self = this;
     this.setTime(this.start_at);
+    if (this.interval) {
+    	clearInterval(this.interval);
+    }
     this.interval = setInterval(function(){ self.run(); }, 100);	
 };
+
+StateStart.prototype.reset = function (start_at, onchange) {
+	this.start_at = start_at;
+	this.onchange = onchange;
+    // 00
+    show1 = this.nums[1][0];
+    show0 = this.nums[0][0];
+    this.setTime(this.start_at);
+    this.start();	
+}
 
 StateStart.prototype.update = function () {
 	
@@ -71,6 +84,7 @@ StateStart.prototype.run = function () {
 		this.onchange(this.time);		
 	if (this.time<=0) {
 		clearInterval(this.interval);
+		this.interval = null;
 	}
 }
 

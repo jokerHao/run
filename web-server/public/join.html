@@ -131,8 +131,18 @@
     var join = function() {
         var name = $("#name input").val();
         var table = $("#table input").val();
+
+        if (!name || !table) {
+            alert('請輸入姓名與桌號');
+            return;
+        }
+
         game.register(name, table, function(err, data){
-            if (err) {
+            if (err==300) {
+                alert('此姓名已有人使用');
+                return;
+            }
+            if (err==200) {
                 return window.location.href = "/join_fail.html";
             }
             window.location.href = "/fb_share.html?pid="+data.pid;
@@ -146,10 +156,10 @@
     			<img id="blah" src="" />
             </div>
             <div id="name">
-                <input type="text" placeholder="請輸入您的名稱">
+                <input type="text" placeholder="">
             </div>
             <div id="table">
-                <input type="text" placeholder="請輸入座位桌號">
+                <input type="text" placeholder="">
             </div>
             <div id="join">
                 <button id="btn_join" onclick="join()"></button>

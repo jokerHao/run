@@ -67,11 +67,14 @@ game.get_gameing = function (callback) {
 game.get_score = function (callback) {
 	socket.request('get_score', null, callback);
 }
-game.client_ok = function (callback) {
-	socket.request('client_ok', null, callback);
+game.client_ready = function (callback) {
+	socket.request('client_ready', null, callback);
 }
-game.getStatus = function (callback) {
-	socket.request('getStatus', null, callback);
+game.client_start = function (callback) {
+	socket.request('client_start', null, callback);
+}
+game.get_state = function (callback) {
+	socket.request('get_state', null, callback);
 }
 
 
