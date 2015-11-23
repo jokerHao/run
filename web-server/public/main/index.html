@@ -245,14 +245,14 @@
         result.push([950, 500, 240, 700, 300]);
         // result.push([280, 200, 700, 380, 850]);
         // result.push([350, 600, 420, 900, 180]);
-        result.push([820, 380, 250, 600, 500]);
+        result.push([880, 380, 250, 600, 500]);
         result.push([1000, 550, 850, 720, 230]);
         result.push([930, 780, 300, 500, 680]);
         result.push([1020, 800, 400, 550, 680]);
         result.push([1040, 730, 950, 320, 610]);
 
-        var idx = getRandomInt(0, result.length - 1);
-        return result[idx];
+        // var idx = getRandomInt(0, result.length - 1);
+        return result;
     }
 
     // 食物擺放
@@ -268,17 +268,34 @@
         return result[idx];
     }
 
+    function getRoule3() {
+        var result = [];
+        result.push([3, 1, 2, 5, 4, 0]);
+        result.push([5, 2, 4, 3, 5, 1]);
+        result.push([0, 4, 5, 1, 3, 2]);
+        result.push([2, 5, 4, 1, 0, 3]);
+        result.push([1, 3, 5, 2, 4, 5]);
+        var idx = getRandomInt(0, result.length - 1);
+        return result[idx];
+    }
+
     // 產生食物
     function food() {
+
+        var r3 = getRoule3();
+        var ary = getRoule();
+        // console.log(ary);
+        // console.log(r3);
         for (var i = 0; i < 6; i++) {
             foods[i] = [];
-            var ary = getRoule();
             var ary2 = getRoule2();            
-            for (var ii in ary) {
-                var idx = getRandomInt(0, 9);
+            for (var ii in ary2) {
+                // var idx = getRandomInt(0, 9);
                 var idx = ary2[ii];
                 var p = phaser.add.sprite(0, 0, 'food' + idx);
-                p.reset(10 + i * 115, ary[ii]);
+
+                var y = ary[r3[i]];
+                p.reset(10 + i * 115, y[ii]);
                 p.anchor.setTo(0, 1);
                 foods[i].push(p);
             }

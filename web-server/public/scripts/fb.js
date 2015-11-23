@@ -74,10 +74,10 @@ MFB.seedUI = function () {
 window.fbAsyncInit = function() {
     console.log('fbAsyncInit');
     FB.init({
-        appId: '312247938844229',
+        appId: '414925542032321',
         cookie: true, // enable cookies to allow the server to access 
         xfbml: true, // parse social plugins on this page
-        version: 'v2.2' // use version 2.2
+        version: 'v2.5' // use version 2.2
     });
 };
 
