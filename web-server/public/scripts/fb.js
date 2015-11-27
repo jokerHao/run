@@ -74,10 +74,10 @@ MFB.seedUI = function () {
 window.fbAsyncInit = function() {
     console.log('fbAsyncInit');
     FB.init({
-        // appId: '414925542032321',
+        appId: '414925542032321',
 
         // test
-        appId : '312247938844229',
+        // appId : '312247938844229',
         
         cookie: true, // enable cookies to allow the server to access 
         xfbml: true, // parse social plugins on this page
