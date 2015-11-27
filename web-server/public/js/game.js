@@ -20,9 +20,9 @@ socket.on('response', function(data){
 });
 
 /////////////
-game.register = function (name, table_num, callback) {
+game.register = function (name, table_num, avatar, callback) {
 	console.log('register..');
-	socket.request('register', {'name':name, 'table_num':table_num}, callback);
+	socket.request('register', {'name':name, 'table_num':table_num, 'avatar':avatar}, callback);
 };
 game.auth = function (code, callback) {
 	socket.request('auth', {'code':code}, callback);
@@ -36,7 +36,7 @@ game.run = function (uid, speed) {
 
 
 // for display client
-game.monitor = function (ready, start, login, logout) {
+game.monitor = function (ready, start, restart, plogin, plogout) {
 	// 抽籤完畢
 	socket.on('game_ready', function(data){
 		ready(data.err, data.data);
@@ -47,14 +47,18 @@ game.monitor = function (ready, start, login, logout) {
 		start(data.err, data.data);
 	});
 
+	socket.on('game_restart', function(data){
+		restart();
+	});
+
 	// 玩家登入
 	socket.on('player_login', function(data){
-		login(data.err, data.data);
+		plogin(data.err, data.data);
 	});
 
 	// 玩家登出
 	socket.on('player_logout', function(data){
-		logout(data.err, data.data);
+		plogout(data.err, data.data);
 	});
 
 	socket.request('monitor', null, function(err, data){
@@ -99,6 +103,9 @@ game.opening = function (callback) {
 };
 game.start = function (callback) {
 	socket.request('start', null, callback);
+};
+game.restart = function () {
+	socket.request('restart', null);
 };
 
 

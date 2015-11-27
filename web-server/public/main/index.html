@@ -5,7 +5,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta charset="UTF-8">
-    <title>仕高利達 遊戲</title>
+    <title>仕高利達</title>
     <meta name="viewport" content="initial-scale=1 maximum-scale=1 user-scalable=0 minimal-ui">
     <script src="../js/lib/jquery-2.0.3.min.js" type="text/javascript"></script>
     <script src="../js/lib/phaser.2.4.4.min.js" type="text/javascript"></script>
@@ -58,12 +58,14 @@
     var self = this;
     var state_start;
 
-    phaser = new Phaser.Game(bg_width, bg_height, Phaser.AUTO, 'phaser-example', {
+    phaser = new Phaser.Game(bg_width, bg_height, Phaser.CANVAS, 'phaser-example', {
         'preload': preload,
         'create': create,
         'update': update,
         'render': render
     });
+
+
     self.phaser = phaser;
     state_start = new StateStart(phaser, 60,
         // 倒數改變
@@ -79,13 +81,17 @@
                 console.log('倒數結束');
                     // 剛倒數完 通知server client表演結束
                 game.client_ready();
+                state_start.second(10);
             }
         });
 
     function preload() {
         // 遊戲背景
         phaser.load.image('background', 'assets/background.png');
+        // http://img.webmd.com/dtmcms/live/webmd/consumer_assets/site_images/articles/health_tools/dog_breed_health_issues_slideshow/getty_rm_photo_of_boxer_dog_looking_at_camera.jpg
 
+        // phaser.load.image('background', 'http://www.sydsvenskan.se/ScaledImages/644x429/Images2/2014/3/16/boll_frii.jpg?h=c21626f0c0f3a1346d6e0e4e8ed96158&fill=False&cut=False&ql=Undefined');
+        
         // 皇冠6個
         phaser.load.image('rank', 'assets/rank/background.png');
         for (var i = 0; i < 6; i++) {
@@ -117,6 +123,9 @@
     // var start_dish;
 
     function create() {
+
+        // enable time.fps
+        phaser.time.advancedTiming = true;
 
         start_dish = phaser.add.group();
         start_dish.enableBody = true;
@@ -153,19 +162,18 @@
                     var p = new Player(phaser);
                     p.body.x = x;
                     p.body.y = y;
-                    p.set(d.name, d.table_num);
+                    p.set(pid, d.name, d.table_num, d.avatar);
                     p.visible(false);
                     players[pid] = p;
                     i++;
                 }
             },
 
-            // 後台控制比賽開始
+            // 後台控制 - 比賽開始
             function(err, data) {    
                 console.log("開始前倒數...");
-                
                 // 開始前倒數
-                state_start.reset(10, function(val){
+                state_start.second_start(function(val){
                     if (val==0) {
                         console.log('遊戲開始');
                         state_start.end();                      
@@ -173,6 +181,11 @@
                         gameSTART();
                     }
                 });            
+            },
+
+            // 後台控制 - 重啟
+            function(err, data) {
+                window.location.href = "/main/";
             },
 
             // 玩家登入
@@ -206,7 +219,7 @@
             resizeGame();
         });
         window.resizeGame();
-        // state_start.create();
+        state_start.create();
     }
 
     var STATE = {
@@ -223,7 +236,7 @@
         else if (state==STATE.PLAY) {
             for (var i in players) {
                 var p = players[i];
-                p.update();
+                p.update(phaser.time.fps);
             }
         }
         else {
@@ -372,7 +385,7 @@
                     players[pid].end(i);
                 }
             }
-        }, 1000);
+        }, 300);
     }
 
     function addPlayer (p) {

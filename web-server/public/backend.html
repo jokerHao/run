@@ -3,14 +3,17 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>仕高利達-後台</title>
+    <title>仕高利達 - 後台</title>
     <script src="js/lib/socket.io/socket.io.js"></script>
     <script src="js/lib/jquery-2.0.3.min.js"></script>
     <script src="js/game.js"></script>
     <style type="text/css">
     #state {
-        /*        color:#FF0000;
-*/
+    }
+
+    img {
+        width: 150px;
+        height: 150px;
     }
     </style>
 </head>
@@ -49,6 +52,10 @@ var update_players = function() {
             str += "<td>" + d.table_num + "</td>";
             str += "<td>" + state + "</td>";
             str += "<td>" + d.code + "</td>";
+            if (d.avatar)
+                str += "<td><img src=" + d.avatar + " /></td>";
+            else
+                str += "<td></td>";
             str += "</tr>";
             num++;
         }
@@ -146,8 +153,10 @@ var login = function (count) {
         <button class="update" onclick="game.init()">初始化</button>
         <button onclick="reg_on()">開放報名</button>
         <button onclick="reg_off()">停止報名</button>
-        <button class="update" onclick="pick6();">抽選6人</button>
+        <button class="update" onclick="pick6()">抽選6人</button>
         <button onclick="start()">開始遊戲</button>
+        <button onclick="game.restart()">重啟遊戲</button>
+
         <button class="update" onclick="test()">12人報名</button>
         <button class="" onclick="login(5)">5人登入</button>    
         <button class="" onclick="login(4)">4人登入</button>        
@@ -164,6 +173,7 @@ var login = function (count) {
                     <th>桌號</th>
                     <th>狀態</th>
                     <th>序號</th>
+                    <th>頭像</th>
                 </tr>
             </thead>
         </table>

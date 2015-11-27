@@ -21,17 +21,64 @@ function init()
 	var uid = params.uid;
 	var right = true;
 	var left = true;
+
 	var speed = 0;
+	var is_start = false;
+	var update_time = 300;
+	var XX = 5;
+	var speeds = [];
+
+	var send = function () {
+		var s = 0;
+		var c = 0;
+		for (var i=speeds.length-1; c<XX; i--) {
+			// console.log(i);
+			// console.log(speeds[i]);
+			if (speeds[i]!=null) {
+				c++;
+				s += speeds[i];
+			}
+			else {
+				break;
+			}
+		}
+		var time = c * update_time;
+		var rate = c==0 ? 0 : (s/time * 1000);
+
+
+
+		console.log('time: %s speed: %o  rate: %o ____ %o ____ %o', time, s, rate, speeds, c);
+		game.run(uid, rate, function(){});					
+	}
+
+	var update = function () {
+		speeds.push(speed);
+		speed = 0;
+	}
 
 	var run = function () {
+		if (!is_start) {
+		    return;
+		}
 		left = false;
 		right = false;
 		speed++;
-		if (speed>=2) {
-			var val = speed;
-			speed = 0;
-			game.run(uid, val, function(){});		
+	}
+
+	var check = function () {
+		if (is_start) {
+			return;
 		}
+		setTimeout(function(){
+		    game.get_state(function(err, data) {
+		        is_start = data.state==4;
+		        if (is_start) {
+			        setInterval(update, update_time);
+			        setInterval(send, update_time * XX);
+		    	}
+		        check();
+		    });			
+		}, 500);
 	}
 
 	$('#btn_left').click(function(){
@@ -46,8 +93,9 @@ function init()
 			run();
 		}
 	});	
-
-	game.login(uid, function(){});
+	game.login(uid, function(){
+		check();
+	});
 }
 $(document).ready(function(){
 	init();

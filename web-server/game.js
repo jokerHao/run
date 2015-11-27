@@ -90,6 +90,7 @@ socket.handle('register', function(msg, callback){
 		'id': pid, 
 		'name': msg.name, 
 		'table_num': msg.table_num, 
+		'avatar': msg.avatar,
 		'order': order, 
 		'state': config_game.PLAYER_STATE.IDLE, 
 		'code': code, 
@@ -162,8 +163,8 @@ socket.handle('run', function(msg, callback) {
 	if (!player) {
 		return console.log('uid fail');
 	}
-	console.log('run  ', player.id);
-	gameing.run(player.id, parseInt(msg.speed));
+	// console.log('run  ', player.id);
+	gameing.run(player.id, parseFloat(msg.speed));
 });
 ////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////
@@ -264,12 +265,19 @@ socket.handle('start', function(msg, callback) {
 		return callback('state err', state);
 	}
 	// 檢查玩家是否都登入
-	if (gameing.isReady()) {
-		gameing.start();
-		callback();
-	}
-	else {
-		callback('玩家尚未登入');
+	// if (gameing.isReady()) {
+	// 	gameing.start();
+	// 	callback();
+	// }
+	// else {
+	// 	callback('玩家尚未登入');
+	// }
+
+	gameing.start();
+});
+socket.handle('restart', function(msg, callback){
+	if (monitor) {
+		monitor.emit('game_restart', {'err':null, 'data':null});	
 	}
 });
 

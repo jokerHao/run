@@ -4,11 +4,14 @@ var Player = function (phaser, p) {
 
 	// var p = phaser.add.sprite(0, 0, 'player');
 	
-	var p =  group.create(0, 0, 'player');
+    var p = phaser.add.sprite(0, 0, 'player');
+    p.order = 0;
+    group.add(p);
 
     // 桌號底板
     var tb = phaser.add.sprite(0, 0, 'player_table');
     tb.anchor.setTo(0.5, 0.5);
+    tb.order = 2;
 	group.addChild(tb);
     tb.reset(8, 8);
 
@@ -19,6 +22,7 @@ var Player = function (phaser, p) {
         align: 'center',
         strokeThickness: 1
     });
+    tt.order = 3;
     tt.anchor.setTo(0.5, 0.5);
 	group.addChild(tt);
 
@@ -29,16 +33,19 @@ var Player = function (phaser, p) {
         align: 'right',
         strokeThickness: 1
     });
+    pn.order = 1;
     pn.anchor.setTo(1, 0.5);
 	group.addChild(pn);        
 
     //登入狀態
     var on = phaser.add.sprite(13, 102, 'player_on');
     on.anchor.setTo(0.5, 0.5);
+    on.order = 1;
 	group.addChild(on);    
 
     var off = phaser.add.sprite(13, 102, 'player_off');
     off.anchor.setTo(0.5, 0.5);
+    off.order = 1;
 	group.addChild(off);
 
 	this.bodys = {};
@@ -54,12 +61,28 @@ var Player = function (phaser, p) {
     // this.visible = group.visible;
     this.body = group;
 
+    this.body.customSort(function(a,b){return a.order - b.order});    
     this.score = 0;
 };
 
-Player.prototype.set = function (name, table_num) {
+Player.prototype.set = function (pid, name, table_num, avatar) {
+    this.pid = pid;
 	this.bodys['name'].text = name;
-	this.bodys['table_num'].text = table_num;	
+	this.bodys['table_num'].text = table_num;
+    if (avatar) {
+        console.log(pid, avatar);
+        var data = new Image();
+        data.src = avatar;
+        this.phaser.cache.addImage('player_avatar_'+pid, avatar, data);         
+
+        var av = this.phaser.add.sprite(12, 8, 'player_avatar_'+pid);
+        // av.anchor.setTo(0.5, 0.5)
+        av.width = 80;
+        av.height = 80;
+        av.order = 1;
+        this.body.addChild(av); 
+        this.body.customSort(function(a,b){return a.order - b.order});    
+    }
 };
 
 Player.prototype.online = function (flag) {
@@ -71,8 +94,8 @@ Player.prototype.visible = function (flag) {
 	this.body.visible = flag;
 };
 
-Player.prototype.update = function () {
-    this.body.y = 1060 - this.score * 10;
+Player.prototype.update = function (fps) {
+    this.body.y -= (this.score/fps) * 15;
 };
 
 Player.prototype.end = function (r) {

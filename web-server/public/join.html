@@ -83,11 +83,9 @@
         width: 200px;
         height: 45px;
         text-align: center;
-        /*background-color: #f5e1be;*/
         background-color: transparent;
-        /*float: right;*/
-        border-top-right-radius: 10px;
-        border-bottom-right-radius: 10px;
+        /*border-top-right-radius: 10px;*/
+        /*border-bottom-right-radius: 10px;*/
         padding: 0 10px;
         border: 0;
         color: #633c1b;
@@ -110,6 +108,9 @@
 
 <body>
     <script type="text/javascript">
+    var avatar;
+    var img = document.createElement("img");
+
     function readURL(input) {
         console.log(input.files);
         if (input.files && input.files[0]) {
@@ -117,7 +118,42 @@
 
             reader.onload = function(e) {
                 console.log(e);
-                $('#blah').attr('src', e.target.result);
+                console.log('onload : ',e.target.result);
+                avatar = e.target.result;
+
+
+                // img.src = e.target.result;
+
+                // var canvas = document.createElement("canvas");
+                // //var canvas = $("<canvas>", {"id":"testing"})[0];
+                // var ctx = canvas.getContext("2d");
+                // ctx.drawImage(img, 0, 0);
+
+                // var MAX_WIDTH = 400;
+                // var MAX_HEIGHT = 300;
+                // var width = img.width;
+                // var height = img.height;
+
+                // if (width > height) {
+                //   if (width > MAX_WIDTH) {
+                //     height *= MAX_WIDTH / width;
+                //     width = MAX_WIDTH;
+                //   }
+                // } else {
+                //   if (height > MAX_HEIGHT) {
+                //     width *= MAX_HEIGHT / height;
+                //     height = MAX_HEIGHT;
+                //   }
+                // }
+                // canvas.width = width;
+                // canvas.height = height;
+                // var ctx = canvas.getContext("2d");
+                // ctx.drawImage(img, 0, 0, 100, 100);
+
+                // var dataurl = canvas.toDataURL("image/png");
+
+                // $('#blah').attr('src', dataurl);
+                $('#blah').attr('src', avatar);
             };
 
             reader.readAsDataURL(input.files[0]);
@@ -137,7 +173,7 @@
             return;
         }
 
-        game.register(name, table, function(err, data){
+        game.register(name, table, avatar, function(err, data){
             if (err==300) {
                 alert('此姓名已有人使用');
                 return;

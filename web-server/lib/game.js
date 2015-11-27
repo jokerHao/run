@@ -38,7 +38,7 @@ Game.prototype.start = function () {
 
 // 玩家
 Game.prototype.run = function (pid, speed) {
-	this.score[pid] += speed;
+	this.score[pid] = speed;
 };
 Game.prototype.end = function () {
 	// 將狀態改為休息

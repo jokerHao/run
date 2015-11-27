@@ -30,10 +30,27 @@
 			<!--<script type="text/javascript" src="scripts/jquery.address-1.5.min.js"></script>-->
 		</head>
 		<body>
+			<script type="text/javascript">
+				function auth () {
+					console.log('auth');
+					var $pc = $('#pinCode');
+					var code = $pc.val();
+					game.auth(code, function(err, data){
+						if (err) {
+							console.log('123');
+							alert('序號錯誤');
+							return 
+						}
+						window.location.href = "play.html?uid="+data.uid;
+					});
+				}
+			</script>>
 			<div id="container">
 				<img id="girl" src="images/girl.png">
+				<img id="girl_right" src="images/girl_right.png">
 				<div id="inputText">
 					<input type="text" id="pinCode">
+					<button id="login" onclick="auth()"></button>
 				</div>
 			</div>
 			<img id="im" src="images/footer.png">
