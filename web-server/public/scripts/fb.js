@@ -74,7 +74,7 @@ MFB.seedUI = function () {
 window.fbAsyncInit = function() {
     console.log('fbAsyncInit');
     FB.init({
-        appId: '414925542032321',
+        appId: '414925542034341',
 
         // test
         // appId : '312247938844229',
