@@ -8,9 +8,6 @@
     <script src="js/lib/jquery-2.0.3.min.js"></script>
     <script src="js/game.js"></script>
     <style type="text/css">
-    #state {
-    }
-
     img {
         width: 150px;
         height: 150px;
@@ -64,7 +61,7 @@ var update_players = function() {
     });
 };
 
-
+var players;
 var update_status = function() {
     game.get_state(function(err, data) {
         var STATE = {
@@ -105,7 +102,12 @@ var start = function () {
 var pick6 = function () {
     game.opening(function(err, data){
         if (err) {
-            alert('人數不夠');
+            if (err==200) {
+                alert('人數不夠');
+            }
+            else {
+                alert('遊戲尚未連接');
+            }
         }
     });
 }
@@ -121,14 +123,17 @@ $(document).ready(function() {
     });
 });
 
-var test = function () {
-    for (var i=0; i <12; i++) {
-        game.register("name"+i, i);
+
+// ----
+var test_register_id = 0;
+var test_register = function (count) {
+    test_register_id += 100;    
+    for (var i=0; i <count; i++) {
+        game.register("name"+test_register_id+i, i);
     }
 }
 
-var players;
-var login = function (count) {
+var test_login = function (count) {
     var ii = 0; 
     for (var i in players) {
         if (players[i].state==1 && ii<count) {
@@ -145,8 +150,9 @@ var login = function (count) {
 </script>
 
 <body>
-    <p>仕高利達後台</p>
-    <p id="state"></p>
+    <h1>仕高利達後台</h1>
+    <hr>
+    當前狀態 : [ <b><state id="state"></state></b> ]
     <hr>
     <div>
         <button onclick="update_status()">更新狀態</button>
@@ -157,13 +163,15 @@ var login = function (count) {
         <button onclick="start()">開始遊戲</button>
         <button onclick="game.restart()">重啟遊戲</button>
 
-        <button class="update" onclick="test()">12人報名</button>
-        <button class="" onclick="login(5)">5人登入</button>    
-        <button class="" onclick="login(4)">4人登入</button>        
+        <button class="update" onclick="test_register(12)">12人報名</button>
+        <button class="update" onclick="test_register(5)">5人報名</button>
+
+<!--         <button class="" onclick="test_login(5)">5人登入</button>    
+        <button class="" onclick="test_login(4)">4人登入</button>         -->
     </div>
     <hr>
     <div>
-        參賽玩家:
+        <h4>玩家列表:</h4>
         <table border="1" id="tab_players">
             <thead>
                 <tr>

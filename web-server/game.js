@@ -17,7 +17,7 @@ var players = {};
 // uid : player
 var uid_map = {};
 var gameing = null;
-var monitor;
+var monitor = null;
 var STATE = {
 	'REGISTER': 0,		// 報名
 	"PAUSE": 	1,		// 停止報名
@@ -230,6 +230,11 @@ socket.handle('reg_off', function(msg, callback){
 });
 // 抽籤
 socket.handle('opening', function(msg, callback){
+
+	if (!monitor) {
+		return callback(403);
+	}
+
 	// 結束上一場
 	uid_map = {};
 	if (gameing) {
