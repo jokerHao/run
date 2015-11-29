@@ -4,7 +4,7 @@ var params;
 
 function init()
 {
-	cjo = new CasaJudgeOrientation();
+	// cjo = new CasaJudgeOrientation();
 
 	// 取參數
 	params = {};

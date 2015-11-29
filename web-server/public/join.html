@@ -9,34 +9,37 @@
     <meta property="og:title" content="仕高利達 - 怎麼搭都好吃" />
     <meta property="og:description" content="仕高利達 - 怎麼搭都好吃" />
     <meta property="og:type" content="website" />
-    <link href="styles/reset.css" rel="stylesheet" type="text/css">
-    <link href="styles/play.css" rel="stylesheet" type="text/css">
-    <!-- <script src="scripts/judgeOrientation.js"></script> -->
-    <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
-    <!-- <script type="text/javascript" src="scripts/input.js"></script>
-    <script type="text/javascript" src="scripts/align.js"></script>
-    <script type="text/javascript" src="scripts/play.js"></script>
-    <script type="text/javascript" src="js/lib/socket.io/socket.io.js"></script>
-    <script type="text/javascript" src="js/game.js"></script> -->
+    <!–[if IE]>
+        <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]–>
 
+    <!-- <link href="styles/reset.css" rel="stylesheet" type="text/css"> -->
+    <link href="styles/sl.css" rel="stylesheet" type="text/css">
+
+<!--     <link href="styles/play.css" rel="stylesheet" type="text/css">
+ -->
+    <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
     <script type="text/javascript" src="js/lib/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="js/game.js"></script>
 
     <style type="text/css">
+
     #center {
-        max-width: 400px;
         position: relative;
-        top: 30%;
+        top: 200px;
+        /*left: 5%;*/
+        width: 95%;
         margin: 0 auto;
     }
     
     #upload {
     	position: relative;
         background: url(../images/join/upload.png) 0 0 no-repeat;
+        background-size: 100%;
         margin: auto;
-        height: 120px;
-        width: 120px;
-        margin-bottom: 20px;
+        height: 100px;
+        width: 100px;
+        margin-bottom: 15px;
     }
 
     #upload img {
@@ -55,6 +58,7 @@
     
     #name {
         background: url(../images/join/name.png) 0 0 no-repeat;
+        background-size: 100%;        
         margin: auto;
         max-width: 330px;
         height: 50px;
@@ -63,6 +67,7 @@
     
     #table {
         background: url(../images/join/table.png) 0 0 no-repeat;
+        background-size: 100%;        
         margin: auto;
         max-width: 330px;
         height: 50px;
@@ -71,9 +76,10 @@
     
     #join {
         background: url(../images/join/join.png) center center no-repeat;
-        width: 130px;
-        height: 130px;
-        margin: 20px auto;
+        background-size: 100%;
+        width: 100px;
+        height: 100px;
+        margin: 15px auto;
     }
     
     #table input,
@@ -111,6 +117,7 @@
     var avatar;
     var img = document.createElement("img");
 
+
     function readURL(input) {
         console.log(input.files);
         if (input.files && input.files[0]) {
@@ -121,48 +128,13 @@
                 console.log('onload : ',e.target.result);
                 avatar = e.target.result;
 
-
-                // img.src = e.target.result;
-
-                // var canvas = document.createElement("canvas");
-                // //var canvas = $("<canvas>", {"id":"testing"})[0];
-                // var ctx = canvas.getContext("2d");
-                // ctx.drawImage(img, 0, 0);
-
-                // var MAX_WIDTH = 400;
-                // var MAX_HEIGHT = 300;
-                // var width = img.width;
-                // var height = img.height;
-
-                // if (width > height) {
-                //   if (width > MAX_WIDTH) {
-                //     height *= MAX_WIDTH / width;
-                //     width = MAX_WIDTH;
-                //   }
-                // } else {
-                //   if (height > MAX_HEIGHT) {
-                //     width *= MAX_HEIGHT / height;
-                //     height = MAX_HEIGHT;
-                //   }
-                // }
-                // canvas.width = width;
-                // canvas.height = height;
-                // var ctx = canvas.getContext("2d");
-                // ctx.drawImage(img, 0, 0, 100, 100);
-
-                // var dataurl = canvas.toDataURL("image/png");
-
-                // $('#blah').attr('src', dataurl);
-                $('#blah').attr('src', avatar);
+                localStorage.setItem('avatar',avatar);
+                window.location.href = "/IR/";
             };
 
             reader.readAsDataURL(input.files[0]);
         }
     }
-
-    var upload = function() {
-
-    };
 
     var join = function() {
         var name = $("#name input").val();
@@ -184,12 +156,20 @@
             window.location.href = "/fb_share.html?pid="+data.pid;
         });
     };
+
+    $(function(){
+        if (localStorage.avatar) {
+            avatar = localStorage.avatar;
+            $('#blah').attr('src', localStorage.avatar);            
+        }
+    })
     </script>
     <div id="container">
+        <img src="../images/background.png"/>
         <div id="center">
             <div id="upload">
             	<input type='file' onchange="readURL(this);" accept="image/*"/>
-    			<img id="blah" src="" />
+    			<img id="blah" src="">
             </div>
             <div id="name">
                 <input type="text" placeholder="">
@@ -202,7 +182,7 @@
             </div>
         </div>
     </div>
-    <img id="im" src="images/footer.png">    
+    <img id="footer" src="images/footer.png">    
 </body>
 
 </html>

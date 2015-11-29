@@ -1,0 +1,26 @@
+body {
+    margin: 0 auto;
+}
+
+#container
+{
+    width: 100%; 
+    margin: 0 auto;    
+}
+
+#container>img
+{
+    position: absolute;
+    width: 100vw;
+    display: block;
+    z-index: -100;
+}
+
+#footer
+{
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+    z-index: 999;
+    display: block;
+}

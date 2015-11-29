@@ -1,27 +1,20 @@
 var MFB = {};
 
-MFB.statusChangeCallback = function (response) {
-  console.log('statusChangeCallback');
-  console.log(response);
-  if (response.status === 'connected') {
-      MFB.onLogin();
-  } 
-  else if (response.status === 'not_authorized') {
-      // document.getElementById('status').innerHTML = 'Please log ' + ' into this app.';
-  } 
-  else {
-      // document.getElementById('status').innerHTML = 'Please log ' + 'into Facebook.';
-  }
-};
-
-// This function is called when someone finishes with the Login
-// Button.  See the onlogin handler attached to it in the sample
-// code below.
-MFB.checkLoginState = function () {
+MFB.getLoginStatus = function (next) {
     FB.getLoginStatus(function(response) {
-        MFB.statusChangeCallback(response);
+      console.log('getLoginStatus');
+      console.log(response);
+      if (response.status === 'connected') {
+          next();
+      } 
+      else if (response.status === 'not_authorized') {
+          // document.getElementById('status').innerHTML = 'Please log ' + ' into this app.';
+      } 
+      else {
+          // document.getElementById('status').innerHTML = 'Please log ' + 'into Facebook.';
+      }
     });
-}
+};
 
 // Here we run a very simple test of the Graph API after login is
 // successful.  See statusChangeCallback() for when this call is made.
@@ -30,7 +23,6 @@ MFB.onLogin = function () {
     FB.api('/me', function(response) {
         console.log('Successful login for: ' + response.name);
         console.log(response);
-
         game.register(response.name, 01, function(err, data) {
             if (err) {
                 document.getElementById('status').innerHTML = '報名失敗 : ' + response.name + '!';
@@ -41,15 +33,28 @@ MFB.onLogin = function () {
     });
 }
 
+
+
 MFB.seed = function (message) {
-    FB.api('/me/feed', 'post', {
-        'message': message
-    }, function(response) {
-        if (!response || response.error) {
-            alert('Error occured');
-        } else {
-            alert('Post ID: ' + response.id);
-        }
+    FB.getLoginStatus(function(response) {
+      console.log('getLoginStatus');
+      console.log(response);
+      if (response.status === 'connected') {
+        FB.api('/me/feed', 'post', {'message': message}, function(response) {
+            if (!response || response.error) {
+                alert('Error occured');
+            } 
+            else {
+                alert('Post ID: ' + response.id);
+            }
+        });
+      } 
+      else if (response.status === 'not_authorized') {
+          // document.getElementById('status').innerHTML = 'Please log ' + ' into this app.';
+      } 
+      else {
+          // document.getElementById('status').innerHTML = 'Please log ' + 'into Facebook.';
+      }
     });
 }
 
