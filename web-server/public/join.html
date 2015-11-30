@@ -13,14 +13,13 @@
         <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]–>
 
-    <!-- <link href="styles/reset.css" rel="stylesheet" type="text/css"> -->
     <link href="styles/sl.css" rel="stylesheet" type="text/css">
 
-<!--     <link href="styles/play.css" rel="stylesheet" type="text/css">
- -->
+
     <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
     <script type="text/javascript" src="js/lib/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="js/game.js"></script>
+    <script type="text/javascript" src="js/ImageTools.js"></script>
 
     <style type="text/css">
 
@@ -120,19 +119,54 @@
 
     function readURL(input) {
         console.log(input.files);
+
+
+
+
+
         if (input.files && input.files[0]) {
-            var reader = new FileReader();
 
-            reader.onload = function(e) {
-                console.log(e);
-                console.log('onload : ',e.target.result);
-                avatar = e.target.result;
+            ImageTools.resize(input.files[0], {
+                width: 200, // maximum width
+                height: 200 // maximum height
+            }, function(blob, didItResize) {
+                // didItResize will be true if it managed to resize it, otherwise false (and will return the original file as 'blob')
+                // document.getElementById('preview').src = window.URL.createObjectURL(blob);
 
-                localStorage.setItem('avatar',avatar);
-                window.location.href = "/IR/";
-            };
+                console.log(blob);
+                // avatar = window.URL.createObjectURL(blob);
 
-            reader.readAsDataURL(input.files[0]);
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    avatar = e.target.result;
+                    console.log('onload : ',avatar);
+
+                    // localStorage.setItem('avatar',avatar);
+                    // window.location.href = "/IR/";
+                    $('#blah').attr('src', avatar); 
+                };
+                reader.readAsDataURL(blob);
+
+                // console.log(avatar);
+                // $('#blah').attr('src', avatar); 
+
+                // you can also now upload this blob using an XHR.
+            });
+
+
+            // var reader = new FileReader();
+
+            // reader.onload = function(e) {
+            //     console.log(e);
+            //     console.log('onload : ',e.target.result);
+            //     avatar = e.target.result;
+
+            //     // localStorage.setItem('avatar',avatar);
+            //     // window.location.href = "/IR/";
+            //     $('#blah').attr('src', avatar); 
+            // };
+
+            // reader.readAsDataURL(input.files[0]);
         }
     }
 
@@ -158,10 +192,10 @@
     };
 
     $(function(){
-        if (localStorage.avatar) {
-            avatar = localStorage.avatar;
-            $('#blah').attr('src', localStorage.avatar);            
-        }
+        // if (localStorage.avatar) {
+        //     avatar = localStorage.avatar;
+        //     $('#blah').attr('src', localStorage.avatar);            
+        // }
     })
     </script>
     <div id="container">

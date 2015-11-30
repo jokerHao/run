@@ -1,11 +1,14 @@
 body {
+    height: 100%;    
     margin: 0 auto;
 }
 
 #container
 {
     width: 100%; 
-    margin: 0 auto;    
+    height: 100vh;
+    margin: 0 auto;
+    background-color: #714d15;
 }
 
 #container>img
@@ -13,7 +16,7 @@ body {
     position: absolute;
     width: 100vw;
     display: block;
-    z-index: -100;
+    z-index: 0;
 }
 
 #footer

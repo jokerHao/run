@@ -61,14 +61,14 @@ socket.onDisconnect = function () {
 
 // mobile
 socket.handle('register', function(msg, callback){
-	if (state!=STATE.REGISTER) {
-		return callback(200);
-	}
+	// if (state!=STATE.REGISTER) {
+	// 	return callback(200);
+	// }
 
-	// 暱稱不能重複
-	if (getPlayerBy('name', msg.name)) {
-		return callback(300);
-	}
+	// // 暱稱不能重複
+	// if (getPlayerBy('name', msg.name)) {
+	// 	return callback(300);
+	// }
 
 	// 確保序號不重複
 	var code = 0;
@@ -247,9 +247,9 @@ socket.handle('opening', function(msg, callback){
 	// 抽等待中的玩家
 	var ary = [];
 	for (var i in players) {
-		if (players[i].state==config_game.PLAYER_STATE.IDLE) {
+		// if (players[i].state==config_game.PLAYER_STATE.IDLE) {
 			ary.push(players[i]);
-		}
+		// }
 	}
 	if (ary.length < 6) {
 		return callback(200);

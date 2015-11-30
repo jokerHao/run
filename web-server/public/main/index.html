@@ -114,6 +114,7 @@
 
         // 盤子
         phaser.load.image('start_dish', 'assets/start_dish.png');
+
         state_start.preload();
     }
 
@@ -137,11 +138,15 @@
         // 創建背景
         phaser.add.sprite(0, 0, 'background');
 
+        // 產生盤子
         for (var i = 0; i < 6; i++) {
             dishs[i] = [];
             for (var ii = 0; ii < 70; ii++) {
                 var obj = phaser.add.sprite(0, 0, 'start_dish');
-                obj.reset(20 + i * 115 + 20 * Math.random(), 1115 - ii * 15);
+
+                var x = 10 + i * 115; // 20 * Math.random()
+                x += 15 * Math.random();
+                obj.reset(x, 1115 - ii * 15);
                 obj.visible = false;
                 dishs[i].push(obj);
             }            
@@ -163,8 +168,8 @@
                     var p = new Player(phaser);
                     p.body.x = x;
                     p.body.y = y;
+                    p.visible(false);                    
                     p.set(pid, d.name, d.table_num, d.avatar);
-                    p.visible(false);
                     players[pid] = p;
                     i++;
                 }
@@ -372,7 +377,7 @@
             for (var i in players) {
                 var p = players[i];
                 var y  = p.body.y;
-                if (y<100) {
+                if (y<90) {
                     state = STATE.END;
                 }
                 players_y.push([i, y]);

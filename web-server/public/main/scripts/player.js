@@ -85,27 +85,29 @@ Player.prototype.set = function (pid, name, table_num, avatar) {
         var data = new Image();
         data.src = avatar;
         var key = 'player_avatar_'+pid;
-        // key = Math.random();
+        key = Math.random();
 
         var fuck = this.phaser.cache.checkImageKey(key);
         this.phaser.cache.addImage(key, avatar, data);         
 
+        console.log(phaser.cache.getKeys(Phaser.Cache.IMAGE));
+
         console.log(pid, fuck, avatar);
 
         // this.phaser.cache.removeImage(key);
-        setTimeout(this.delayload.call(this, key), 1000);
+        setTimeout(this.delayload.call(this, key), 0);
     }
 };
 
 Player.prototype.delayload = function (key) {
-    console.log('fuck key ',key);
+    console.log('load start ',key, this.phaser.cache.checkImageKey(key));
     var av = this.phaser.add.sprite(5, 7, key);
     av.width = 95;
     av.height = 95;
     av.order = -1;
     this.body.addChild(av); 
     this.body.customSort(function(a,b){return a.order - b.order});    
-    this.body.visible = true;    
+    // this.body.visible = true;    
 }
 
 Player.prototype.online = function (flag) {
@@ -118,7 +120,7 @@ Player.prototype.visible = function (flag) {
 };
 
 Player.prototype.update = function (fps) {
-    this.body.y -= (this.score/fps) * 15;
+    this.body.y -= (this.score/fps) * 2;
 };
 
 Player.prototype.end = function (r) {

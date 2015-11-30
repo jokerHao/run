@@ -10,22 +10,57 @@
     <meta property="og:description" content="仕高利達 - 怎麼搭都好吃" />
     <meta property="og:type" content="website" />
 
-    <link href="styles/reset.css" rel="stylesheet" type="text/css">
-    <link href="styles/play.css" rel="stylesheet" type="text/css">
+    <!-- <link href="styles/reset.css" rel="stylesheet" type="text/css"> -->
+    <!-- <link href="styles/play.css" rel="stylesheet" type="text/css"> -->
+    <link href="styles/sl.css" rel="stylesheet" type="text/css">
 
     <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
     <script type="text/javascript" src="scripts/play.js"></script>
     <script type="text/javascript" src="js/lib/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="js/game.js"></script>
+    <style type="text/css">
+
+        #center {
+            width: 100%;
+            height: vh;
+        }
+        #girl {
+            position: fixed;
+            right: 0;
+            /*width: 60%;*/
+            /*max-width: 280px;*/
+            max-height: 100%;
+            max-width: 100%;
+            display: block;
+            bottom: 0;
+        }
+        #btn_left {
+            display: block;            
+            position: fixed;
+            left: 0;
+            bottom: 10%;
+            max-width: 45%
+        }
+        #btn_right {
+            display: block;            
+            position: fixed;
+            right: 0;
+            bottom: 10%;
+            max-width: 45%            
+        }
+    </style>
 </head>
 
 <body>
     <div id="container">
-        <img id="girl" src="images/gameGirl.png">
-        <img id="btn_left" src="images/left.png">
-        <img id="btn_right" src="images/right.png">
+        <img src="../images/background.png"/>    
+        <div id="center">
+            <img id="girl" src="images/gameGirl.png">
+            <img id="btn_left" src="images/left.png">
+            <img id="btn_right" src="images/right.png">            
+        </div>
     </div>
-    <img id="im" src="images/footer.png">
+    <img id="footer" src="images/footer.png">
 </body>
 
 </html>

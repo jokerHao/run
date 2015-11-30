@@ -86,7 +86,7 @@ window.fbAsyncInit = function() {
         
         cookie: true, // enable cookies to allow the server to access 
         xfbml: true, // parse social plugins on this page
-        version: 'v2.5' // use version 2.2
+        version: 'v2.2' // use version 2.2
     });
 };
 

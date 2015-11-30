@@ -60,8 +60,8 @@ function init()
 		if (!is_start) {
 		    return;
 		}
-		left = false;
-		right = false;
+		// left = false;
+		// right = false;
 		speed++;
 	}
 
@@ -82,16 +82,16 @@ function init()
 	}
 
 	$('#btn_left').click(function(){
-		left = true;
-		if (right) {
+		// left = true;
+		// if (right) {
 			run();
-		}
+		// }
 	});	
 	$('#btn_right').click(function(){
-		right = true;
-		if (left) {
+		// right = true;
+		// if (left) {
 			run();
-		}
+		// }
 	});	
 	game.login(uid, function(){
 		check();
