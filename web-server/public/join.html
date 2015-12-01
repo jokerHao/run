@@ -24,11 +24,10 @@
     <style type="text/css">
 
     #center {
-        position: relative;
-        top: 200px;
-        /*left: 5%;*/
-        width: 95%;
-        margin: 0 auto;
+        position: absolute;
+        width: 100%;
+        margin: auto;
+        bottom: 0;
     }
     
     #upload {
@@ -59,7 +58,7 @@
         background: url(../images/join/name.png) 0 0 no-repeat;
         background-size: 100%;        
         margin: auto;
-        max-width: 330px;
+        max-width: 300px;
         height: 50px;
         margin: 5px auto;
     }
@@ -68,7 +67,7 @@
         background: url(../images/join/table.png) 0 0 no-repeat;
         background-size: 100%;        
         margin: auto;
-        max-width: 330px;
+        max-width: 300px;
         height: 50px;
         margin: 5px auto;
     }
@@ -89,13 +88,8 @@
         height: 45px;
         text-align: center;
         background-color: transparent;
-        /*border-top-right-radius: 10px;*/
-        /*border-bottom-right-radius: 10px;*/
         padding: 0 10px;
         border: 0;
-        color: #633c1b;
-        font-size: 18px;
-        font-weight: bold;
     }
     
     button {
@@ -119,23 +113,9 @@
 
     function readURL(input) {
         console.log(input.files);
-
-
-
-
-
         if (input.files && input.files[0]) {
-
-            ImageTools.resize(input.files[0], {
-                width: 200, // maximum width
-                height: 200 // maximum height
-            }, function(blob, didItResize) {
-                // didItResize will be true if it managed to resize it, otherwise false (and will return the original file as 'blob')
-                // document.getElementById('preview').src = window.URL.createObjectURL(blob);
-
+            ImageTools.resize(input.files[0], {"width": 200, "height": 200}, function(blob, didItResize) {
                 console.log(blob);
-                // avatar = window.URL.createObjectURL(blob);
-
                 var reader = new FileReader();
                 reader.onload = function(e) {
                     avatar = e.target.result;
@@ -146,27 +126,7 @@
                     $('#blah').attr('src', avatar); 
                 };
                 reader.readAsDataURL(blob);
-
-                // console.log(avatar);
-                // $('#blah').attr('src', avatar); 
-
-                // you can also now upload this blob using an XHR.
             });
-
-
-            // var reader = new FileReader();
-
-            // reader.onload = function(e) {
-            //     console.log(e);
-            //     console.log('onload : ',e.target.result);
-            //     avatar = e.target.result;
-
-            //     // localStorage.setItem('avatar',avatar);
-            //     // window.location.href = "/IR/";
-            //     $('#blah').attr('src', avatar); 
-            // };
-
-            // reader.readAsDataURL(input.files[0]);
         }
     }
 

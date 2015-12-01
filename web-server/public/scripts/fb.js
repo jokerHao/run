@@ -63,17 +63,17 @@ MFB.getHeadImageUrl = function (fbid) {
     return link;
 }
 
-MFB.seedUI = function () {
+MFB.seedUI = function (callback) {
     var publish = {
         // display: 'iframe',
         method: 'feed',
-        picture: 'http://i.ytimg.com/vi/AaOuMOOsUzs/maxresdefault.jpg',
-        link: 'https://www.facebook.com/ScottishLeaderTW/?fref=ts',
-        name: '仕高利達!',
+        picture: 'http://52.11.186.93:3000/images/logo.jpg',
+        link: 'https://developers.facebook.com/docs/',
+        name: '仕高利達 怎麼搭都好吃',
         caption: 'SCOTTISH LEADER',
-        description: '怎麼搭都好吃'
+        description: '挑戰最高1500元歡樂加菜金!!'
     };
-    FB.ui(publish, null);
+    FB.ui(publish, callback);
 }
 
 window.fbAsyncInit = function() {
@@ -83,10 +83,10 @@ window.fbAsyncInit = function() {
 
         // test
         // appId : '312247938844229',
-        
+
         cookie: true, // enable cookies to allow the server to access 
         xfbml: true, // parse social plugins on this page
-        version: 'v2.2' // use version 2.2
+        version: 'v2.5' // use version 2.2
     });
 };
 

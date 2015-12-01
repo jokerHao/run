@@ -15,15 +15,92 @@
 				<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 			<![endif]–>
 			
-			
-			<link href="styles/reset.css" rel="stylesheet" type="text/css">
-			<link href="styles/style.css" rel="stylesheet" type="text/css">
+			<link href="styles/sl.css" rel="stylesheet" type="text/css">
+
+			<!-- <link href="styles/reset.css" rel="stylesheet" type="text/css"> -->
+			<!-- <link href="styles/style.css" rel="stylesheet" type="text/css"> -->
 			<script src="https://code.jquery.com/jquery-1.11.3.js"></script>
 
 
 		    <script src="js/lib/socket.io/socket.io.js"></script>	
 		    <script src="js/game.js"></script>	
+		    <style type="text/css">
+		    	#girl {
+		    		width: 50%;
+		    		position: absolute;
+		    		display: block;
+		    		/*z-index: 1;*/
+		    		bottom: 0;
+		    		left: 0;
+		    	}
+		    	#girl_right {
+		    		width: 40%;
+		    		position: absolute;
+		    		display: block;
+		    		/*z-index: 1;*/
+		    		bottom: 0;
+		    		right: 0;
+		    	}
 
+
+		    	
+		    	@media screen and (max-width: 399px) {
+					#input {
+			    		position: absolute;		    		
+			    		bottom: 0;
+			    		height: 53%;
+			    		width: 100%;
+			    	}		    		
+					#code {
+			    		display: block;		
+			    		margin: auto;
+			    		/*width: 100%;*/
+			    		width: 230px;
+			    		height: 32px;
+			    		background-image: url(images/number.png);
+			    		background-repeat: no-repeat;
+			    		background-size: 100%;
+			    		border: 0;
+			    		background-color: transparent;
+			    		padding-left: 70px;
+			    		padding-right: 10px;
+			    		text-align: center;
+			    	}
+			    	#login {
+			    		display: block;
+			    		margin: 20px auto;
+			    		max-width: 30%;  
+			    	}									     
+				}
+				@media screen and (min-width: 400px) {
+					#input {
+			    		position: absolute;		    		
+			    		bottom: 0;
+			    		height: 50%;
+			    		width: 100%;
+			    	}
+					#code {
+			    		display: block;		
+			    		margin: auto;
+			    		/*width: 100%;*/
+			    		width: 280px;
+			    		height: 40px;
+			    		background-image: url(images/number.png);
+			    		background-repeat: no-repeat;
+			    		background-size: 100%;
+			    		border: 0;
+			    		background-color: transparent;
+			    		padding-left: 90px;
+			    		padding-right: 10px;
+			    		text-align: center;
+			    	}
+			    	#login {
+			    		display: block;
+			    		margin: 20px auto;
+			    		max-width: 30%;  
+			    	}					
+				}
+		    </style>
 		</head>
 		<body>
 			<script type="text/javascript">
@@ -42,13 +119,20 @@
 				}
 			</script>
 			<div id="container">
-				<img id="girl" src="images/girl.png">
-				<img id="girl_right" src="images/girl_right.png">
-				<div id="inputText">
-					<input type="text" id="pinCode">
-					<button id="login" onclick="auth()"></button>
-				</div>
+        		<img src="../images/background.png"/>    
+        			<img id="girl" src="images/girl.png">  
+        			<img id="girl_right" src="images/girl_right.png">
+
+					<div id="input">
+							<input id="code" type="text">
+
+						<!-- <div id="code_bg" src="images/number.png"> -->
+						<!-- </div> -->
+						<img id="login" src="images/ok.png" onclick="auth()">					
+						<!-- <button id="login" onclick="auth()"></button> -->
+					</div>        
+
 			</div>
-			<img id="im" src="images/footer.png">			
+			<img id="footer" src="images/footer.png">			
 		</body>
 	</html>

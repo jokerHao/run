@@ -20,30 +20,29 @@
     <script type="text/javascript" src="js/game.js"></script>
     <style type="text/css">
 
-        #center {
-            width: 100%;
-            height: vh;
+     /*   #center {
+            position: absolute;
         }
-        #girl {
-            position: fixed;
+*/        #girl {
+            position: absolute;
             right: 0;
+            bottom: 0;            
             /*width: 60%;*/
             /*max-width: 280px;*/
-            max-height: 100%;
+            max-height: 80%;
             max-width: 100%;
             display: block;
-            bottom: 0;
         }
         #btn_left {
             display: block;            
-            position: fixed;
+            position: absolute;
             left: 0;
             bottom: 10%;
             max-width: 45%
         }
         #btn_right {
             display: block;            
-            position: fixed;
+            position: absolute;
             right: 0;
             bottom: 10%;
             max-width: 45%            
@@ -54,11 +53,11 @@
 <body>
     <div id="container">
         <img src="../images/background.png"/>    
-        <div id="center">
+        <!-- <div id="center"> -->
             <img id="girl" src="images/gameGirl.png">
             <img id="btn_left" src="images/left.png">
             <img id="btn_right" src="images/right.png">            
-        </div>
+        <!-- </div> -->
     </div>
     <img id="footer" src="images/footer.png">
 </body>

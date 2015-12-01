@@ -63,7 +63,12 @@
 <body>
     <script type="text/javascript">
     var share = function() {
-        MFB.seedUI();
+        MFB.seedUI(function(response){
+            console.log(response);
+            if (response && response.post_id) {
+                // window.location.href = "/join_ok.html";
+            }
+        });
     };
 
     var cancel = function() {
