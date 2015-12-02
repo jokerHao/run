@@ -20,18 +20,17 @@
     <style type="text/css">
 
     #center {
-        position: relative;
-        top: 200px;
-        width: 100%;
-        max-width: 306px;
-        max-height: 328px;        
-        margin: 0px auto;        
+        position: absolute;
+        width: 306px;
+                /*height: 328px;  */
+        left: 0;
+        right: 0;
+        margin: 0 auto;  
+        bottom: 10%;      
     }
 
     #center img {
         width: 100%;
-        /*position: absolute;*/
-
         margin: 0 auto;
         display: block;  
     }
@@ -66,7 +65,7 @@
         MFB.seedUI(function(response){
             console.log(response);
             if (response && response.post_id) {
-                // window.location.href = "/join_ok.html";
+                window.location.href = "/join_ok.html";
             }
         });
     };

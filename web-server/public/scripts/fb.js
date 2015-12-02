@@ -68,7 +68,7 @@ MFB.seedUI = function (callback) {
         // display: 'iframe',
         method: 'feed',
         picture: 'http://52.11.186.93:3000/images/logo.jpg',
-        link: 'https://developers.facebook.com/docs/',
+        link: 'http://52.11.186.93:3000/home.html',
         name: '仕高利達 怎麼搭都好吃',
         caption: 'SCOTTISH LEADER',
         description: '挑戰最高1500元歡樂加菜金!!'

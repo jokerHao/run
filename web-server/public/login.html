@@ -105,12 +105,11 @@
 		<body>
 			<script type="text/javascript">
 				function auth () {
-					console.log('auth');
-					var $pc = $('#pinCode');
+					var $pc = $('#code');
 					var code = $pc.val();
+					console.log('auth ',code);
 					game.auth(code, function(err, data){
 						if (err) {
-							console.log('123');
 							alert('序號錯誤');
 							return 
 						}
@@ -124,7 +123,7 @@
         			<img id="girl_right" src="images/girl_right.png">
 
 					<div id="input">
-							<input id="code" type="text">
+						<input id="code" type="text">
 
 						<!-- <div id="code_bg" src="images/number.png"> -->
 						<!-- </div> -->
