@@ -67,7 +67,7 @@ MFB.seedUI = function (callback) {
     var publish = {
         // display: 'iframe',
         method: 'feed',
-        picture: 'http://52.11.186.93:3000/images/link.png',
+        picture: 'http://52.11.186.93:3000/images/link.jpg',
         link: 'http://52.11.186.93:3000/home.html',
         name: '仕高利達 怎麼搭都好吃',
         caption: 'SCOTTISH LEADER',
