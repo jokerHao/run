@@ -16,6 +16,8 @@
     <link href="styles/sl.css" rel="stylesheet" type="text/css">
 
     <script type="text/javascript" src="scripts/fb.js"></script>
+    <script type="text/javascript" src="js/lib/socket.io/socket.io.js"></script>    
+    <script type="text/javascript" src="js/game.js"></script>
 
     <style type="text/css">
 
@@ -61,10 +63,28 @@
 
 <body>
     <script type="text/javascript">
+    // 取參數
+    params = {};
+    if (location.search) {
+        var parts = location.search.substring(1).split('&');
+        for (var i = 0; i < parts.length; i++) {
+            var nv = parts[i].split('=');
+            if (!nv[0]) continue;
+            params[nv[0]] = nv[1] || true;
+        }
+    }
+    var pid = params.pid;
+    console.log(pid);
+
+    game.share(pid);
+
     var share = function() {
         MFB.seedUI(function(response){
             console.log(response);
             if (response && response.post_id) {
+                if (pid) {
+                    game.share(pid);
+                }
                 window.location.href = "/join_ok.html";
             }
         });

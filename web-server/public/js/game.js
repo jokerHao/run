@@ -24,6 +24,9 @@ game.register = function (name, table_num, avatar, callback) {
 	console.log('register..');
 	socket.request('register', {'name':name, 'table_num':table_num, 'avatar':avatar}, callback);
 };
+game.share = function (pid) {
+	socket.request('share', {'pid':pid});
+};
 game.auth = function (code, callback) {
 	socket.request('auth', {'code':code}, callback);
 };
@@ -33,7 +36,6 @@ game.login = function (uid, callback) {
 game.run = function (uid, speed) {
 	socket.request('run', {'uid':uid, 'speed':speed});
 };
-
 
 // for display client
 game.monitor = function (ready, start, restart, plogin, plogout) {
@@ -76,6 +78,9 @@ game.client_ready = function (callback) {
 }
 game.client_start = function (callback) {
 	socket.request('client_start', null, callback);
+}
+game.client_end = function (rank, callback) {
+	socket.request('client_end', {'rank':rank}, callback);
 }
 game.get_state = function (callback) {
 	socket.request('get_state', null, callback);

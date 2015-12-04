@@ -14,6 +14,7 @@
     <script src="./scripts/player.js"></script>    
     <script src="./scripts/state_start.js"></script>
     <style>
+    
     body {
         margin: 0px;
         padding: 0px;
@@ -386,10 +387,13 @@
                 players_y.sort(function(a, b) {
                     return a[1] - b[1];
                 });
+                var rank = [];
                 for (var i in players_y) {
                     var pid = players_y[i][0];
+                    rank.push(pid);
                     players[pid].end(i);
                 }
+                game.client_end(rank);
             }
         }, 300);
     }

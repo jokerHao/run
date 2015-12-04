@@ -44,16 +44,20 @@ var update_players = function() {
             state = d.state == 0 ? "" : d.state == 1 ? "準備" : d.state == 2 ? "上場" : "休息";
             var date = parseTimestamp(d.reg_time);
             str += "<tr>";
+           
             str += "<td>" + num + "</td>";
-            str += "<td>" + date + "</td>";
-            str += "<td>" + d.name + "</td>";
-            str += "<td>" + d.table_num + "</td>";
-            str += "<td>" + state + "</td>";
-            str += "<td>" + d.code + "</td>";
             if (d.avatar)
                 str += "<td><img src=" + d.avatar + " /></td>";
             else
-                str += "<td></td>";
+                str += "<td></td>";             
+            str += "<td>" + date + "</td>";
+            str += "<td>" + d.name + "</td>";
+            str += "<td>" + d.table_num + "</td>";
+            str += "<td>" + d.code + "</td>";
+            str += "<td>" + (d.share ? 'O':'X') + "</td>";                        
+            str += "<td>" + state + "</td>";            
+            str += "<td>" + (d.gid ? (parseInt(d.gid)+1):"") + "</td>";
+            str += "<td>" + (d.rank ? (parseInt(d.rank)+1):"") + "</td>";            
             str += "</tr>";
             num++;
         }
@@ -177,13 +181,16 @@ var test_login = function (count) {
         <table border="1" id="tab_players">
             <thead>
                 <tr>
-                    <th>編號</th>
+                    <th>編號</th>                
+                    <th>頭像</th>                
                     <th>報名時間</th>
                     <th>暱稱</th>
                     <th>桌號</th>
-                    <th>狀態</th>
                     <th>序號</th>
-                    <th>頭像</th>
+                    <th>FB分享</th>
+                    <th>狀態</th>                    
+                    <th>場次</th>
+                    <th>排名</th>
                 </tr>
             </thead>
         </table>

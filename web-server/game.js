@@ -1,5 +1,9 @@
-var config_game = require('./config/game.json');
+var ROOT = "../";
 
+var fs = require('fs');
+var moment = require('moment');
+
+var config_game = require('./config/game.json');
 var Socket = require('./lib/socket.js');
 var Game = require('./lib/game.js');
 
@@ -46,6 +50,18 @@ var getTimestamp = function () {
 	return Math.floor(Date.now() / 1000);
 }
 
+var playerLog = function (player) {
+	var filename = moment().format("YYYY-MM-DD");
+	var filepath = ROOT + "log/" + filename;
+	console.log(filepath);
+	var str = JSON.stringify(player) + "@#$";
+	fs.appendFile(filepath, str, function(err) {
+        if (err) {
+            console.log(err);
+        }
+    });
+}
+
 socket.onConnect = function () {
 
 };
@@ -85,8 +101,8 @@ socket.handle('register', function(msg, callback){
 	// 抽籤順序
 	var order = Math.random();
 
-	pid ++;
-	players[pid] = {
+
+	var player = {
 		'id': pid, 
 		'name': msg.name, 
 		'table_num': msg.table_num, 
@@ -95,11 +111,25 @@ socket.handle('register', function(msg, callback){
 		'state': config_game.PLAYER_STATE.IDLE, 
 		'code': code, 
 		'reg_time': time,
-		'uid': ""
+		'uid': "",
+		'rank': "",
+		'gid': "",
+		'share': false
 	};
+
+	pid ++;
+	players[pid] = player;
 	callback(null, {'pid':pid});
+	playerLog(player);
 });
 
+// 分享
+socket.handle('share', function(msg, callback){
+	var pid = msg.pid;
+	if (players[pid]) {
+		players[pid].share = true;	
+	}
+});
 
 // --- 使用序號登入 login.html
 socket.handle('auth', function(msg, callback){
@@ -198,6 +228,17 @@ socket.handle('client_start', function(msg, callback){
 	}
 	callback();
 });
+socket.handle('client_end', function(msg, callback){
+	if (gameing) {
+		for (var i in msg.rank) {
+			var pid = msg.rank[i];
+			players[pid].rank = i;
+		}
+	}
+	else {
+		console.log('no game...');
+	}
+});
 ////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////
 
@@ -259,6 +300,9 @@ socket.handle('opening', function(msg, callback){
 		ary.pop();
 	}
 
+	for (var i in ary) {
+		ary[i].gid = gid;
+	}
 	gameing = new Game(ary, monitor);
 	gameing.id = gid;
 	gid++;
