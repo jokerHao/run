@@ -30,6 +30,7 @@ var STATE = {
 	"PLAY": 	4		//
 };
 var state = STATE.REGISTER;
+var firstRun = true;
 
 var getPlayerBy = function (key, val) {
 	for (var i in players) {
@@ -50,12 +51,11 @@ var getTimestamp = function () {
 	return Math.floor(Date.now() / 1000);
 }
 
-var playerLog = function (player) {
+var save = function (player) {
 	var filename = moment().format("YYYY-MM-DD");
 	var filepath = ROOT + "log/" + filename;
-	console.log(filepath);
-	var str = JSON.stringify(player) + "@#$";
-	fs.appendFile(filepath, str, function(err) {
+	var str = JSON.stringify(players);
+	fs.writeFile(filepath, str, function(err) {
         if (err) {
             console.log(err);
         }
@@ -120,7 +120,6 @@ socket.handle('register', function(msg, callback){
 	pid ++;
 	players[pid] = player;
 	callback(null, {'pid':pid});
-	playerLog(player);
 });
 
 // 分享
@@ -250,6 +249,8 @@ socket.handle('init', function(msg, callback){
 	gameing = null;
 	players = {};
 	pid = 0;
+	git = 0;
+	firstRun = true;
 });
 socket.handle('get_players', function(msg, callback){
 	callback(null, players);
@@ -274,6 +275,11 @@ socket.handle('opening', function(msg, callback){
 
 	if (!monitor) {
 		return callback(403);
+	}
+
+	if (firstRun) {
+		save();
+		firstRun = false;
 	}
 
 	// 結束上一場
