@@ -4,13 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <title>仕高利達 - 後台</title>
-    <script src="js/lib/socket.io/socket.io.js"></script>
+
     <script src="js/lib/jquery-2.0.3.min.js"></script>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+
+    <script src="js/lib/socket.io/socket.io.js"></script>
     <script src="js/game.js"></script>
     <style type="text/css">
     img {
-        width: 150px;
-        height: 150px;
+        width: 100px;
+        height: 100px;
         display: block;
     }
     </style>
@@ -32,8 +44,10 @@ Date.prototype.Format = function(fmt) { //author: meizz
     return fmt;
 }
 function parseTimestamp(value) {
-    return (new Date(value * 1000)).Format('yyyy/MM/dd hh:mm:ss');
+    return (new Date(value * 1000)).Format('hh:mm:ss');
 }
+var pstate = ["","準備","上場","休息"];
+var pstate_cls = ["", "bg-warning", "bg-success", "active"]
 var update_players = function() {
     game.get_players(function(err, data) {
         $('#tab_players tbody').remove();
@@ -41,21 +55,20 @@ var update_players = function() {
         var num = 1;
         for (var i in data) {
             var d = data[i];
-            state = d.state == 0 ? "" : d.state == 1 ? "準備" : d.state == 2 ? "上場" : "休息";
             var date = parseTimestamp(d.reg_time);
-            str += "<tr>";
+            str += "<tr class=\""+pstate_cls[d.state]+"\">";
            
             str += "<td>" + num + "</td>";
+            str += "<td>" + date + "</td>";            
             if (d.avatar)
-                str += "<td><img src=" + d.avatar + " /></td>";
+                str += "<td><img class=\"img-rounded\" src=" + d.avatar + " /></td>";
             else
                 str += "<td></td>";             
-            str += "<td>" + date + "</td>";
             str += "<td>" + d.name + "</td>";
             str += "<td>" + d.table_num + "</td>";
             str += "<td>" + d.code + "</td>";
             str += "<td>" + (d.share ? 'O':'X') + "</td>";                        
-            str += "<td>" + state + "</td>";            
+            str += "<td>" + pstate[d.state] + "</td>";            
             str += "<td>" + (d.gid ? (parseInt(d.gid)+1):"") + "</td>";
             str += "<td>" + (d.rank ? (parseInt(d.rank)+1):"") + "</td>";            
             str += "</tr>";
@@ -77,7 +90,7 @@ var update_status = function() {
             "PLAY":     4       //
         };
 
-        var state_name = ["報名中", "停止報名", "等待倒數", "等待玩家登入 - 後台啟動遊戲", "遊戲中"];
+        var state_name = ["開放報名", "停止報名", "等待倒數", "等待玩家登入 - 後台啟動遊戲", "遊戲中"];
         var state_color = ['green', 'red', 'black', 'blace', 'blue'];
         $('#state').text(state_name[data.state]);
         $('#state').css('color', state_color[data.state]);
@@ -122,6 +135,7 @@ $(document).ready(function() {
     update_status();
 
     $(".update").click(function(){
+        update_status();
         setTimeout(function(){
             update_players();
         }, 500);
@@ -154,36 +168,34 @@ var test_login = function (count) {
 
 </script>
 
-<body>
-    <h1>仕高利達後台</h1>
-    <hr>
-    當前狀態 : [ <b><state id="state"></state></b> ]
-    <hr>
-    <div>
-        <button onclick="update_status()">更新狀態</button>
-        <button class="update" onclick="game.init()">初始化</button>
-        <button onclick="reg_on()">開放報名</button>
-        <button onclick="reg_off()">停止報名</button>
-        <button class="update" onclick="pick6()">抽選6人</button>
-        <button onclick="start()">開始遊戲</button>
-        <button onclick="game.restart()">重啟遊戲</button>
+<body class="container">
+    <div><center>
+        <h1>仕高利達後台</h1>
+        <h4>
+        狀態 : [ <b><state id="state"></state></b> ]
+        </h4>
+    </center></div>
+    <center><div class="col-md-12">
+        <button class=" btn btn-default update" onclick="update_status()">更新狀態</button>
+        <button class=" btn btn-warning update" onclick="game.init()">初始化</button>
+        <button class=" btn btn-default update" onclick="reg_on()">開放報名</button>
+        <button class=" btn btn-default update" onclick="reg_off()">停止報名</button>
+        <button class=" btn btn-primary update" onclick="pick6()">抽選6人</button>
+        <button class=" btn btn-success update" onclick="start()">開始遊戲</button>
+        <button class=" btn btn-danger update" onclick="game.restart()">重啟遊戲</button>
 
-        <button class="update" onclick="test_register(12)">12人報名</button>
-        <button class="update" onclick="test_register(5)">5人報名</button>
-        <button class="update" onclick="test_register(4)">4人報名</button>
-
-<!--         <button class="" onclick="test_login(5)">5人登入</button>    
-        <button class="" onclick="test_login(4)">4人登入</button>         -->
-    </div>
-    <hr>
-    <div>
+        <button class="btn btn-default update" onclick="test_register(12)">12人報名</button>
+        <button class="btn btn-default update" onclick="test_register(5)">5人報名</button>
+        <button class="btn btn-default update" onclick="test_register(4)">4人報名</button>
+    </div></center>
+    <div class="col-md-12">
         <h4>玩家列表:</h4>
-        <table border="1" id="tab_players">
+        <table id="tab_players" class="table table-bordered table-condensed">
             <thead>
                 <tr>
                     <th>編號</th>                
+                    <th>報名時間</th>                    
                     <th>頭像</th>                
-                    <th>報名時間</th>
                     <th>暱稱</th>
                     <th>桌號</th>
                     <th>序號</th>
