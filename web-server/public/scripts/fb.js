@@ -71,7 +71,7 @@ MFB.seedUI = function (callback) {
         link: 'http://52.11.186.93:3000/home.html',
         name: '仕高利達 怎麼搭都好吃',
         caption: 'SCOTTISH LEADER',
-        description: '挑戰最高1500元歡樂加菜金!!'
+        description: '尋找美食大胃王 挑戰最高1500元歡樂加菜金!'
     };
     FB.ui(publish, callback);
 }
