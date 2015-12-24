@@ -292,19 +292,38 @@ socket.handle('opening', function(msg, callback){
 	}
 	state = STATE.WAIT;	
 	// 抽等待中的玩家
+  var tables = {};
 	var ary = [];
 	for (var i in players) {
+    var p = players[i];
 		if (players[i].state==config_game.PLAYER_STATE.IDLE) {
 			ary.push(players[i]);
+      if (!tables[p.table_num]) {
+       tables[p.table_num] = [];
+      }
+      tables[p.table_num].push(p);
 		}
 	}
 	if (ary.length < 6) {
 		return callback(200);
 	}
-	ary.sort(function(a,b){return a.order-b.order});
-	while(ary.length > 6) {
-		ary.pop();
-	}
+  ary = [];  
+  while (ary.length<6) {
+    for (var i in tables) {
+      tables[i].sort(function(a,b){return a.order-b.order});
+      if (tables[i].length>0) {
+        ary.push(tables[i].shift());
+        if (ary.length==6) {
+          break;
+        }
+      }
+    }
+  }
+	// ary.sort(function(a,b){return a.order-b.order});
+	// while(ary.length > 6) {
+	// 	ary.pop();
+	// }
+
 
 	for (var i in ary) {
 		ary[i].gid = gid;
