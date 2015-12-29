@@ -49,7 +49,7 @@ var Player = function (phaser, p) {
     on.order = 1;
 	group.addChild(on);    
 
-    var off = phaser.add.sprite(13, 108, 'player_off');
+    var off = phaser.add.sprite(13, 140, 'player_off');
     off.anchor.setTo(0.5, 0.5);
     off.order = 1;
 	group.addChild(off);
@@ -139,7 +139,7 @@ Player.prototype.visible = function (flag) {
 
 Player.prototype.update = function (fps) {
     var s = this.score < this.baseSpeed ? this.baseSpeed : this.score;
-    this.body.y -= (s/fps) * 2;
+    this.body.y -= (s/fps) * 3.5;
 };
 
 Player.prototype.end = function (r) {
