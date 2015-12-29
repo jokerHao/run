@@ -9,33 +9,33 @@ var Player = function (phaser, p) {
 
 
     // default
-    var pd = phaser.add.sprite(3, 3, 'player_default');
-    pd.anchor.setTo(0, 0);    
-    pd.order = -2;
-    group.addChild(pd);
+    // var pd = phaser.add.sprite(3, 3, 'player_default');
+    // pd.anchor.setTo(0, 0);    
+    // pd.order = -2;
+    // group.addChild(pd);
 
     // 桌號底板
-    var tb = phaser.add.sprite(0, 0, 'player_table');
-    tb.anchor.setTo(0.5, 0.5);
-    tb.order = 2;
-    tb.reset(8, 8);
-    group.addChild(tb);
+ //    var tb = phaser.add.sprite(0, 0, 'player_table');
+ //    tb.anchor.setTo(0.5, 0.5);
+ //    tb.order = 2;
+ //    tb.reset(8, 8);
+ //    group.addChild(tb);
 
-    // 桌號文字
-    var tt = phaser.add.text(9, 10, "0", {
-        font: '16px Arial',
-        fill: '#5A3616',
-        align: 'center',
-        strokeThickness: 1
-    });
-    tt.order = 3;
-    tt.anchor.setTo(0.5, 0.5);
-	group.addChild(tt);
+ //    // 桌號文字
+ //    var tt = phaser.add.text(9, 10, "0", {
+ //        font: '16px Arial',
+ //        fill: '#5A3616',
+ //        align: 'center',
+ //        strokeThickness: 1
+ //    });
+ //    tt.order = 3;
+ //    tt.anchor.setTo(0.5, 0.5);
+	// group.addChild(tt);
 
     // 名稱
-    var pn = phaser.add.text(95, 108, "name", {
+    var pn = phaser.add.text(95, 140, "name", {
         font: '16px Arial',
-        fill: '#5A3616',
+        fill: '#f7f7f7',
         align: 'right',
         strokeThickness: 1
     });
@@ -44,7 +44,7 @@ var Player = function (phaser, p) {
 	group.addChild(pn);        
 
     //登入狀態
-    var on = phaser.add.sprite(13, 108, 'player_on');
+    var on = phaser.add.sprite(13, 140, 'player_on');
     on.anchor.setTo(0.5, 0.5);
     on.order = 1;
 	group.addChild(on);    
@@ -55,9 +55,9 @@ var Player = function (phaser, p) {
 	group.addChild(off);
 
 	this.bodys = {};
-	this.bodys['table_bg'] = tb;
+	// this.bodys['table_bg'] = tb;
 	this.bodys['name'] = pn;
-	this.bodys['table_num'] = tt;
+	// this.bodys['table_num'] = tt;
 	this.bodys['on'] = on;
 	this.bodys['off'] = off;
 	this.bodys['player'] = p;	
@@ -70,18 +70,25 @@ var Player = function (phaser, p) {
     this.body.customSort(function(a,b){return a.order - b.order});    
     this.score = 0;
 
-    this.baseSpeed = Math.random() * 2.5 + 1.5;
+    this.baseSpeed = this.getBaseSpd();
+
 
     var self = this;
     setTimeout(function(){
-        self.baseSpeed = Math.random() * 4 + 2;
+      self.baseSpeed = self.getBaseSpd();
     },2000);
+};
+
+Player.prototype.getBaseSpd = function () {
+  var spd = Math.random() * 4 + 2;
+  // spd += 100;
+  return spd;
 };
 
 Player.prototype.set = function (pid, name, table_num, avatar) {
     this.pid = pid;
 	this.bodys['name'].text = name;
-	this.bodys['table_num'].text = table_num;
+	// this.bodys['table_num'].text = table_num;
     if (avatar) {
         console.log('!!!!!');
         console.log(avatar);

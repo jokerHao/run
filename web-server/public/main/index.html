@@ -5,7 +5,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta charset="UTF-8">
-    <title>仕高利達</title>
+    <title>坦克大戰</title>
     <meta name="viewport" content="initial-scale=1 maximum-scale=1 user-scalable=0 minimal-ui">
     <script src="../js/lib/jquery-2.0.3.min.js" type="text/javascript"></script>
     <script src="../js/lib/phaser.2.4.4.min.js" type="text/javascript"></script>
@@ -89,7 +89,7 @@
     function preload() {
 
         // 遊戲背景
-        phaser.load.image('background', 'assets/background.png');
+        phaser.load.image('background', 'assets/background2.png');
         // http://img.webmd.com/dtmcms/live/webmd/consumer_assets/site_images/articles/health_tools/dog_breed_health_issues_slideshow/getty_rm_photo_of_boxer_dog_looking_at_camera.jpg
 
         // phaser.load.image('background', 'http://www.sydsvenskan.se/ScaledImages/644x429/Images2/2014/3/16/boll_frii.jpg?h=c21626f0c0f3a1346d6e0e4e8ed96158&fill=False&cut=False&ql=Undefined');
@@ -106,7 +106,7 @@
         }
 
         // 玩家
-        phaser.load.image('player', 'assets/player/background2.png');
+        phaser.load.image('player', 'assets/player/background1.png');
         phaser.load.image('player_default', 'assets/player/default.png');
         phaser.load.image('player_table', 'assets/player/table.png');
 
@@ -114,7 +114,7 @@
         phaser.load.image('player_off', 'assets/player/off.png');
 
         // 盤子
-        phaser.load.image('start_dish', 'assets/start_dish.png');
+        // phaser.load.image('start_dish', 'assets/start_dish.png');
 
         state_start.preload();
     }
@@ -140,18 +140,18 @@
         phaser.add.sprite(0, 0, 'background');
 
         // 產生盤子
-        for (var i = 0; i < 6; i++) {
-            dishs[i] = [];
-            for (var ii = 0; ii < 70; ii++) {
-                var obj = phaser.add.sprite(0, 0, 'start_dish');
+        // for (var i = 0; i < 6; i++) {
+        //     dishs[i] = [];
+        //     for (var ii = 0; ii < 70; ii++) {
+        //         var obj = phaser.add.sprite(0, 0, 'start_dish');
 
-                var x = 10 + i * 115; // 20 * Math.random()
-                x += 15 * Math.random();
-                obj.reset(x, 1115 - ii * 15);
-                obj.visible = false;
-                dishs[i].push(obj);
-            }            
-        }
+        //         var x = 10 + i * 115; // 20 * Math.random()
+        //         x += 15 * Math.random();
+        //         obj.reset(x, 1115 - ii * 15);
+        //         obj.visible = false;
+        //         dishs[i].push(obj);
+        //     }            
+        // }
 
         // 開始摟
         game.monitor(
@@ -337,21 +337,21 @@
         }, 100);
 
         // 盤子追
-        setInterval(function() {
-            if (state!=STATE.PLAY) {
-                return;
-            }
-            for (var i=0; i<6; i++) {
-                var p = getPlayerByIdx(i);
-                var y = p.body.y;
-                for (var ii in dishs[i]) {
-                    if (dishs[i][ii].y - 80 > y) {
-                        dishs[i][ii].visible = true;
-                    }
-                }
-            }
+        // setInterval(function() {
+        //     if (state!=STATE.PLAY) {
+        //         return;
+        //     }
+        //     for (var i=0; i<6; i++) {
+        //         var p = getPlayerByIdx(i);
+        //         var y = p.body.y;
+        //         for (var ii in dishs[i]) {
+        //             if (dishs[i][ii].y - 80 > y) {
+        //                 dishs[i][ii].visible = true;
+        //             }
+        //         }
+        //     }
 
-        }, 300);
+        // }, 300);
 
         // 消滅食物
         setInterval(function() {
@@ -392,6 +392,8 @@
                     var pid = players_y[i][0];
                     rank.push(pid);
                     players[pid].end(i);
+                    if (i==2)
+                        break;
                 }
                 game.client_end(rank);
             }
