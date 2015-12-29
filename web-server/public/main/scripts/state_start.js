@@ -57,7 +57,7 @@ StateStart.prototype.start = function () {
     if (this.interval) {
     	clearInterval(this.interval);
     }
-    this.interval = setInterval(function(){ self.run(); }, 200);	
+    this.interval = setInterval(function(){ self.run(); }, 100);	
 };
 
 
