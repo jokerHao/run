@@ -77,9 +77,9 @@ socket.onDisconnect = function () {
 
 // mobile
 socket.handle('register', function(msg, callback){
-	if (state!=STATE.REGISTER) {
-		return callback(200);
-	}
+//	if (state!=STATE.REGISTER) {
+//		return callback(200);
+//	}
 
 	// 暱稱不能重複
 	if (getPlayerBy('name', msg.name)) {

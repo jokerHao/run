@@ -70,8 +70,7 @@ var Player = function (phaser, p) {
     this.body.customSort(function(a,b){return a.order - b.order});    
     this.score = 0;
 
-    this.baseSpeed = Math.random() * 2.5 + 1.5;
-
+    this.baseSpeed = Math.random() * 2.0 + 1;
     var self = this;
     setTimeout(function(){
         self.baseSpeed = Math.random() * 4 + 2;
